@@ -1,59 +1,125 @@
+import { useState } from "react";
 import { INK } from "./Characters.jsx";
 import { SCENES } from "./Scenes.jsx";
 import { STORY, WEDDING } from "../content.js";
 
-const Shield = ({ a, b }) => (
-  <svg className="sh" viewBox="0 0 20 24">
-    <path d="M2 2h16v9c0 6-4 9.5-8 11-4-1.5-8-5-8-11z" fill={a} stroke={INK} strokeWidth="1.3" />
-    <path d="M10 6c-2 2-2 4 0 6 2-2 2-4 0-6zM6 13h8M10 12v6" stroke={b} strokeWidth="1.6" fill={b} />
+const GOLD = "#e3c27a";
+const RED = "#b8352c";
+const BLUE = "#2b4c9b";
+const GREEN = "#2f6b3a";
+
+const FLEUR =
+  "M10 1.5c-2.6 3-2.6 6.2 0 9.3 2.6-3.1 2.6-6.3 0-9.3zM10 11.5c-2.2-3.6-6.6-3.4-6.8-.4-.1 1.8 1.6 3 3.4 2.1M10 11.5c2.2-3.6 6.6-3.4 6.8-.4.1 1.8-1.6 3-3.4 2.1M4.6 13.6h10.8M10 13.6v6.6M7 20.2h6";
+
+const FleurShield = () => (
+  <svg className="sh" viewBox="0 0 24 28">
+    <path d="M2 2h20v10.5c0 7-5 11.5-10 13.5C7 24 2 19.5 2 12.5z" fill={BLUE} stroke={INK} strokeWidth="1.4" />
+    <path d="M3.6 3.6h16.8v8.9c0 6-4.2 9.8-8.4 11.6-4.2-1.8-8.4-5.6-8.4-11.6z" fill="none" stroke={GOLD} strokeWidth=".8" />
+    <path d={FLEUR} transform="translate(2 2.6)" fill={GOLD} stroke={GOLD} strokeWidth="1.2" strokeLinejoin="round" />
   </svg>
 );
-const Flower = ({ c }) => (
+const PartyShield = ({ a = RED, b = BLUE }) => (
+  <svg className="sh" viewBox="0 0 24 28">
+    <path d="M12 2H2v10.5c0 7 5 11.5 10 13.5z" fill={a} />
+    <path d="M12 2h10v10.5c0 7-5 11.5-10 13.5z" fill={b} />
+    <path d="M2 2h20v10.5c0 7-5 11.5-10 13.5C7 24 2 19.5 2 12.5z" fill="none" stroke={INK} strokeWidth="1.4" />
+    <path d="M12 2v24" stroke={GOLD} strokeWidth="1" />
+  </svg>
+);
+const Lozenge = () => (
+  <svg viewBox="0 0 20 24">
+    <path d="M10 1l8.5 11L10 23 1.5 12z" fill={GREEN} stroke={INK} strokeWidth="1.2" />
+    <path d="M10 6l4 6-4 6-4-6z" fill={GOLD} stroke={INK} strokeWidth=".8" />
+  </svg>
+);
+const Rosette = ({ c = RED }) => (
   <svg viewBox="0 0 24 24">
-    <g fill={c} stroke={INK} strokeWidth="1">
-      <circle cx="12" cy="6" r="4" /><circle cx="18" cy="11" r="4" /><circle cx="15.5" cy="18" r="4" /><circle cx="8.5" cy="18" r="4" /><circle cx="6" cy="11" r="4" />
+    <g fill={c} stroke={INK} strokeWidth=".9">
+      {[0, 45, 90, 135, 180, 225, 270, 315].map((r) => (
+        <path key={r} d="M12 12c-2-3-2-7 0-10 2 3 2 7 0 10z" transform={`rotate(${r} 12 12)`} />
+      ))}
     </g>
-    <circle cx="12" cy="13" r="3" fill="#e3c27a" stroke={INK} />
+    <circle cx="12" cy="12" r="2.6" fill={GOLD} stroke={INK} strokeWidth=".8" />
   </svg>
 );
-const Leaf = () => (
-  <svg viewBox="0 0 30 16">
-    <path d="M1 8c6-7 14-7 28 0-14 7-22 7-28 0z" fill="#4f8a3a" stroke={INK} strokeWidth="1" />
-    <path d="M3 8h24" stroke={INK} strokeWidth=".8" />
+const GoldFlower = () => (
+  <svg viewBox="0 0 20 20">
+    <g fill={GOLD} stroke="#8a6a2a" strokeWidth=".7">
+      {[0, 90, 180, 270].map((r) => <path key={r} d="M10 10c-1.6-2.2-1.6-5.4 0-7.6 1.6 2.2 1.6 5.4 0 7.6z" transform={`rotate(${r} 10 10)`} />)}
+    </g>
+    <circle cx="10" cy="10" r="1.6" fill={RED} />
   </svg>
 );
-const Bird = () => (
-  <svg viewBox="0 0 34 22">
-    <path d="M2 13c5-2 9-2 12 1 1-6 6-11 14-12-4 3-6 7-5 11 3 0 6 1 9 3-6 1-11 3-16 4-6 0-11-3-14-7z" fill="#5a86c8" stroke={INK} strokeWidth="1" />
-    <circle cx="27" cy="15" r=".9" fill={INK} />
+const Scroll = ({ flip }) => (
+  <svg viewBox="0 0 44 22" style={flip ? { transform: "scaleX(-1)" } : undefined}>
+    <path d="M2 14c6-10 14-10 18-4s10 8 14 2 6-8 8-6" fill="none" stroke={GREEN} strokeWidth="2.2" strokeLinecap="round" />
+    <path d="M10 8c-3-4 1-7 4-5-1 3-2 4-4 5zM26 15c2 4 6 4 7 1-3-1-4-1-7-1z" fill="#4f8a3a" stroke={INK} strokeWidth=".7" />
+    <circle cx="20" cy="9.5" r="1.6" fill={RED} stroke={INK} strokeWidth=".5" />
+  </svg>
+);
+const Swallow = ({ flip }) => (
+  <svg viewBox="0 0 40 24" style={flip ? { transform: "scaleX(-1)" } : undefined}>
+    <path d="M2 4c6 1 11 4 15 8 3-5 8-9 15-10-3 3-5 6-5 9 4 0 8 1 11 3-6 1-10 1-13 2-2 3-6 5-11 5 2-2 3-3 3-5-5-2-10-6-15-12z" fill="#3f6fb5" stroke={INK} strokeWidth=".9" strokeLinejoin="round" />
+    <path d="M17 13c2 2 5 3 9 2-2 2-5 3-8 2z" fill="#fbf7ee" />
+    <circle cx="29" cy="12" r=".9" fill={INK} />
+  </svg>
+);
+const Daisy = () => (
+  <svg viewBox="0 0 20 20">
+    <g fill="#fbf7ee" stroke={INK} strokeWidth=".7">
+      {[0, 72, 144, 216, 288].map((r) => <ellipse key={r} cx="10" cy="5" rx="2.8" ry="4" transform={`rotate(${r} 10 10)`} />)}
+    </g>
+    <circle cx="10" cy="10" r="2" fill={GOLD} stroke={INK} strokeWidth=".6" />
   </svg>
 );
 
 const BandTop = () => (
   <div className="band-top">
-    <Flower c="#a8302a" /><Leaf /><Flower c="#e3c27a" /><Leaf />
-    <Shield a="#2b4c9b" b="#e3c27a" />
-    <Leaf /><Flower c="#e3c27a" /><Leaf /><Flower c="#a8302a" />
+    <Lozenge /><Scroll /><GoldFlower /><Rosette />
+    <FleurShield />
+    <Rosette /><GoldFlower /><Scroll flip /><Lozenge />
   </div>
 );
 const BandBottom = () => (
   <div className="band-bottom">
-    <Shield a="#a8302a" b="#e3c27a" /><Bird /><Flower c="#e3c27a" />
-    <Shield a="#2b4c9b" b="#e3c27a" />
-    <Flower c="#e3c27a" /><Bird /><Shield a="#a8302a" b="#e3c27a" />
+    <PartyShield /><Swallow /><Daisy /><PartyShield a={BLUE} b={RED} /><Daisy /><Swallow flip /><PartyShield />
   </div>
 );
 
-function StoryPage({ chapter, index }) {
+export const Dropcap = ({ letter, big }) => (
+  <span className={`dropcap${big ? " big" : ""}`}>
+    <svg viewBox="0 0 40 40" aria-hidden="true">
+      <path d="M4 34c4-8 2-14 8-18M36 6c-4 8-2 14-8 18" fill="none" stroke={GREEN} strokeWidth="1.6" />
+      <path d="M9 22c-4-2-4-6-1-7 1 3 1 5 1 7zM31 18c4 2 4 6 1 7-1-3-1-5-1-7z" fill="#4f8a3a" />
+      <circle cx="6" cy="9" r="2" fill={RED} /><circle cx="34" cy="31" r="2" fill={RED} />
+    </svg>
+    <b>{letter}</b>
+  </span>
+);
+
+function Illustration({ chapter }) {
+  const [failed, setFailed] = useState(!chapter.image);
   const Scene = SCENES[chapter.scene];
+  if (failed) return <Scene />;
+  return (
+    <img
+      src={import.meta.env.BASE_URL + chapter.image}
+      alt=""
+      draggable="false"
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
+function StoryPage({ chapter, index }) {
   const [first, ...rest] = chapter.text;
   return (
     <>
       <BandTop />
       <h3 className="chapter">{chapter.title}</h3>
-      <div className="scene"><Scene /></div>
+      <div className="scene"><Illustration chapter={chapter} /></div>
       <p className="story">
-        <span className="dropcap">{first}</span>
+        <Dropcap letter={first} />
         {rest.join("")}
       </p>
       <div className="folio">· {index + 1} ·</div>
@@ -70,6 +136,7 @@ const icon = {
 const Ico = ({ d }) => (
   <span className="ico"><svg viewBox="0 0 24 24"><path d={d} /></svg></span>
 );
+const stop = (e) => e.stopPropagation();
 
 function InvitePage() {
   const W = WEDDING;
@@ -77,7 +144,7 @@ function InvitePage() {
     <>
       <BandTop />
       <div className="head">
-        <div className="dropcap big">M</div>
+        <Dropcap letter="M" big />
         <div className="lead">
           asalımızın en güzel sayfasında<br />
           <span className="ink">sizleri de yanımızda görmekten mutluluk duyarız.</span>
@@ -92,8 +159,8 @@ function InvitePage() {
         <li>
           <Ico d={icon.pin} />
           <div>
-            <a href={W.mapsUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>Haritada aç</a>
-            <small><a href={W.venueUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>Mekânı incele</a></small>
+            <a href={W.mapsUrl} target="_blank" rel="noopener noreferrer" onClick={stop}>Haritada aç</a>
+            <small><a href={W.venueUrl} target="_blank" rel="noopener noreferrer" onClick={stop}>Mekânı incele</a></small>
           </div>
         </li>
       </ul>
@@ -103,7 +170,7 @@ function InvitePage() {
   );
 }
 
-// Book content, in reading order: [left, right] for each spread.
+// Book content in reading order: [left, right] for each spread.
 export const PAGES = [
   ...STORY.map((chapter, i) => {
     const P = () => <StoryPage chapter={chapter} index={i} />;

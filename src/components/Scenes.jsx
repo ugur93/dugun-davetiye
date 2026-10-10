@@ -64,7 +64,7 @@ function Swamp() {
         <rect x="64" y="118" width="3" height="20" fill="#6b4325" />
         <rect x="52" y="108" width="34" height="12" rx="2" fill="#a37a4a" />
       </g>
-      <text x="69" y="117" textAnchor="middle" fontFamily="Almendra" fontWeight="700" fontSize="7" fill={INK}>BATAKLIK</text>
+      <text x="69" y="117" textAnchor="middle" fontFamily="Almendra" fontWeight="700" fontSize="7" fill={INK}>UĞUR</text>
       {/* cattails */}
       <g stroke="#2f6b3a" strokeWidth="1.4">
         <path d="M186 140 v-30 M192 142 v-26 M180 142 v-22" />

@@ -129,6 +129,7 @@ export default function Invitation() {
 
       <div className={`zoom${zoom !== null ? " show" : ""}`} onClick={() => setZoom(null)} aria-hidden={zoom === null}>
         {zoom !== null && <ZoomedPage index={zoom} />}
+        {zoom !== null && <button className="zoom-back">← Davetiye</button>}
       </div>
     </>
   );

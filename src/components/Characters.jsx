@@ -1,12 +1,15 @@
-// Ogre versions of Uğur and Fatma, drawn in a medieval-manuscript style.
+// Uğur and Fatma (optionally as ogres), drawn in a medieval-manuscript style.
 // Each figure lives in a 60 x 120 box with the head centred at (30, 30).
 
 export const INK = "#2c1d10";
-const SKIN = "#8fb84a";
-const SKIN_D = "#6f9636";
+// true = Shrek & Fiona gibi yeşil devler
+export const OGRE = false;
+const SKIN = OGRE ? "#8fb84a" : "#f3cfae";
+const SKIN_D = OGRE ? "#6f9636" : "#dca986";
 const HAIR = "#3a2414";
 
 function Ear({ side, small }) {
+  if (!OGRE) return null;
   const s = side === "left" ? -1 : 1;
   const x0 = 30 + s * (small ? 11.5 : 13);
   const x1 = x0 + s * (small ? 6 : 9);
