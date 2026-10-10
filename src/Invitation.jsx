@@ -18,7 +18,28 @@ export default function Invitation() {
   const [playing, setPlaying] = useState(false);
   const [hasMusic, setHasMusic] = useState(false);
   const audio = useRef(null);
+  const userMuted = useRef(false);
   const touch = useRef(null);
+
+  // Start the music right away. Browsers block sound until the visitor
+  // interacts with the page, so if autoplay is refused we retry on the
+  // very first tap / click / key press anywhere.
+  useEffect(() => {
+    const events = ["pointerdown", "pointerup", "touchend", "click", "keydown"];
+    const stopListening = () => events.forEach((ev) => document.removeEventListener(ev, onInteract, true));
+    const start = () => {
+      const a = audio.current;
+      if (!a || userMuted.current || !a.paused) return;
+      a.play().then(stopListening).catch(() => {});
+    };
+    function onInteract(e) {
+      if (e.target.closest?.(".music")) return; // the music button handles itself
+      start();
+    }
+    events.forEach((ev) => document.addEventListener(ev, onInteract, true));
+    start();
+    return stopListening;
+  }, []);
 
   useEffect(() => {
     if (introDone) return;
@@ -33,7 +54,7 @@ export default function Invitation() {
   };
 
   const open = () => {
-    audio.current?.play().catch(() => {});
+    if (!userMuted.current) audio.current?.play().catch(() => {});
     go(1);
   };
 
@@ -51,6 +72,7 @@ export default function Invitation() {
   const toggleMusic = () => {
     const a = audio.current;
     if (!a) return;
+    userMuted.current = !a.paused;
     a.paused ? a.play().catch(() => {}) : a.pause();
   };
 
@@ -77,7 +99,7 @@ export default function Invitation() {
       <audio
         ref={audio}
         loop
-        preload="metadata"
+        preload="auto"
         onLoadedMetadata={() => setHasMusic(true)}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
