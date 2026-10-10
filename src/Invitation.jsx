@@ -11,6 +11,15 @@ const spreadFromPath = (pathname) => {
   return m ? Math.min(Math.max(+m[1], 1), SPREADS) : 0;
 };
 
+// Gentle fade-in so the music doesn't start abruptly.
+function fadeIn(a, ms = 1500) {
+  const t0 = Date.now();
+  const id = setInterval(() => {
+    a.volume = Math.min(1, (Date.now() - t0) / ms);
+    if (a.volume >= 1 || a.paused) clearInterval(id);
+  }, 50);
+}
+
 export default function Invitation() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -66,7 +75,10 @@ export default function Invitation() {
   // muted it with the music button.
   const startMusic = () => {
     const a = audio.current;
-    if (a && a.paused && !userMuted.current) a.play().catch(() => {});
+    if (!a || !a.paused || userMuted.current) return;
+    if (a.currentTime < WEDDING.musicStart) a.currentTime = WEDDING.musicStart;
+    a.volume = 0;
+    a.play().then(() => fadeIn(a)).catch(() => {});
   };
   const open = () => {
     startMusic(); // called inside the tap itself, which iOS Safari requires
@@ -89,7 +101,10 @@ export default function Invitation() {
     if (!a) return;
     userMuted.current = !a.paused;
     setSfxMuted(userMuted.current);
-    a.paused ? a.play().catch(() => {}) : a.pause();
+    if (a.paused) {
+      a.volume = 1;
+      a.play().catch(() => {});
+    } else a.pause();
   };
 
   const onTouchStart = (e) => (touch.current = e.touches[0].clientX);
@@ -117,9 +132,16 @@ export default function Invitation() {
 
       <audio
         ref={audio}
-        loop
         preload="auto"
-        onLoadedMetadata={() => setHasMusic(true)}
+        onLoadedMetadata={(e) => {
+          setHasMusic(true);
+          if (e.currentTarget.currentTime < WEDDING.musicStart) e.currentTarget.currentTime = WEDDING.musicStart;
+        }}
+        onEnded={(e) => {
+          // loop from where the song becomes audible, not from its quiet intro
+          e.currentTarget.currentTime = WEDDING.musicStart;
+          e.currentTarget.play().catch(() => {});
+        }}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
       >
