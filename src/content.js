@@ -68,6 +68,8 @@ export const STORY = [
   {
     scene: "royal",
     image: "resimler/5-kral-kralice.jpg", // yoksa kodla çizilen sahne görünür
+    // Hareketli versiyon: resimler/5-kral-kralice.mp4 (ya da .webm / .gif) koyarsanız resmin yerine o oynar
+    video: "resimler/5-kral-kralice.mp4",
     finale: true, // "Ve Sonsuza Kadar Mutlu Yaşadılar." başlığı + QR kod
   },
 ];

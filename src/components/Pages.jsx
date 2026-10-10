@@ -136,10 +136,25 @@ function QrBox() {
 
 function Illustration({ chapter }) {
   const [failed, setFailed] = useState(!chapter.image);
+  const [videoFailed, setVideoFailed] = useState(!chapter.video);
   const Scene = SCENES[chapter.scene];
+  const base = import.meta.env.BASE_URL;
+  if (chapter.video && !videoFailed) {
+    if (chapter.video.endsWith(".gif")) {
+      return <img src={base + chapter.video} alt="" draggable="false" onError={() => setVideoFailed(true)} />;
+    }
+    return (
+      <video
+        src={base + chapter.video}
+        poster={chapter.image ? base + chapter.image : undefined}
+        autoPlay muted loop playsInline preload="metadata"
+        onError={() => setVideoFailed(true)}
+      />
+    );
+  }
   if (failed) return <Scene />;
   return (
-    <img src={import.meta.env.BASE_URL + chapter.image} alt="" draggable="false" onError={() => setFailed(true)} />
+    <img src={base + chapter.image} alt="" draggable="false" onError={() => setFailed(true)} />
   );
 }
 

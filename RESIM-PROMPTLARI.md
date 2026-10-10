@@ -99,3 +99,36 @@ gold-stamped serif text "Fatma & Uğur" and below it in italic "Bir varmış, bi
 scuffed edges, soft warm light, cover fills the whole image, portrait 3:4.
 ```
 `kapak.png` olarak `public/resimler/` klasörüne koyun ve bana haber verin, ben bağlarım.
+
+---
+
+## Hareketli son sayfa: `5-kral-kralice.mp4`
+
+**Araç:** Resimden video üreten bir araç, ör. Kling, Runway (Gen-4), Luma Dream Machine, Google Veo (Gemini) ya da Sora.
+**Başlangıç resmi:** `public/resimler/5-kral-kralice.jpg` (kenarları kırpılmış hali; sayfadaki kadrajla birebir aynı olur).
+**Ayarlar:** 5 saniye, aynı en-boy oranı, kamera sabit, mümkünse "loop / seamless loop" açık.
+
+```
+Animate this illustration as a gentle, seamless looping cinemagraph. Keep the exact
+same storybook illuminated-manuscript style, colors, faces and composition. The camera
+is completely still: no zoom, no pan, no cuts.
+
+Motion only:
+- A soft sea breeze: the woman's long dark curly hair and the man's wavy hair sway
+  gently and naturally in the wind; the hem of her gown and the edge of his ermine
+  cape flutter slightly.
+- The pale turquoise sea behind them ripples with slow, calm waves; the stylized
+  swirl clouds drift very slightly.
+- The tulip vines on both sides sway a little in the breeze.
+- The couple stay in place, holding hands; they breathe softly, maybe a tiny smile
+  and one slow blink. No walking, no turning, no new objects.
+
+Subtle, calm, romantic, slow motion. The last frame must match the first frame so it
+loops perfectly. No text.
+```
+
+İpuçları:
+- Yüzler bozulursa: "keep the faces exactly as in the original image" ekleyin ve hareketi azaltın.
+- Kuşları sitedeki animasyon zaten uçuruyor; videoda kuş istemiyorsanız "the two birds stay still" ekleyin.
+- Çıkan videoyu **`5-kral-kralice.mp4`** adıyla `public/resimler/` klasörüne koyun. 2–4 MB'tan büyükse söyleyin, küçültürüm.
+- GIF de olur: adı `5-kral-kralice.gif` olsun ve `src/content.js` içindeki `video:` satırını `.gif` yapın.

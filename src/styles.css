@@ -149,7 +149,7 @@ main {
   filter: sepia(.22) saturate(.85) brightness(.97);
 }
 .chapter, .story, .lead, .invite-head, .couple, .families, .details { opacity: .93; }
-.scene img { filter: sepia(.15) saturate(.9); }
+.scene img, .scene video { filter: sepia(.15) saturate(.9); }
 .page.left { border-radius: 10px 3px 3px 10px; }
 .page.right { border-radius: 3px 10px 10px 3px; }
 .book .page::after { content: ""; position: absolute; top: 0; bottom: 0; width: 7cqw; pointer-events: none; z-index: 4; }
@@ -210,8 +210,8 @@ main {
   flex: 1; min-height: 0; display: flex; align-items: flex-end; justify-content: center;
   padding: 2cqw 2cqw 0;
 }
-.scene svg, .scene img { width: 100%; height: 100%; }
-.scene img {
+.scene svg, .scene img, .scene video { width: 100%; height: 100%; }
+.scene img, .scene video {
   object-fit: contain; object-position: center bottom; user-select: none;
   mix-blend-mode: darken; /* cream background melts into the parchment */
   -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(transparent, #000 10%);
