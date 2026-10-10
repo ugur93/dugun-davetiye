@@ -38,7 +38,23 @@ export default function Invitation() {
     prevSpread.current = spread;
     if (before === spread) return;
     before === 0 || spread === 0 ? coverCreak() : pageFlip();
+    if (before === 0) startMusic(); // the first page just opened
   }, [spread]);
+
+  // Opened straight on a page (e.g. a /sayfa/1 link)? Browsers only allow
+  // sound after a tap, so start the music on the first interaction.
+  useEffect(() => {
+    if (!spread) return;
+    const events = ["pointerdown", "touchend", "keydown"];
+    const off = () => events.forEach((ev) => document.removeEventListener(ev, onTap, true));
+    function onTap(e) {
+      if (e.target.closest?.(".music")) return off(); // the music button decides itself
+      startMusic();
+      off();
+    }
+    events.forEach((ev) => document.addEventListener(ev, onTap, true));
+    return off;
+  }, [spread > 0]);
 
   const go = (n) => {
     const next = Math.min(Math.max(n, 0), SPREADS);
@@ -46,10 +62,14 @@ export default function Invitation() {
     navigate(next ? `/sayfa/${next}` : "/");
   };
 
-  // Music starts with the visitor's "Masalı aç" tap (a user gesture, so
-  // browsers allow sound), unless they muted it with the music button.
+  // Background music starts when the first page opens, unless the visitor
+  // muted it with the music button.
+  const startMusic = () => {
+    const a = audio.current;
+    if (a && a.paused && !userMuted.current) a.play().catch(() => {});
+  };
   const open = () => {
-    if (!userMuted.current) audio.current?.play().catch(() => {});
+    startMusic(); // called inside the tap itself, which iOS Safari requires
     go(1);
   };
 
