@@ -14,6 +14,11 @@ export const WEDDING = {
   // public/ klasöründeki ilk bulunan dosya çalar: kendi şarkınızı muzik.mp3 olarak koyun
   music: ["muzik.mp3", "muzik.m4a"],
   cover: "resimler/kapak.jpg", // kapağın ortasındaki resim
+  event: "Düğün törenimizde", // davetiye sayfasındaki süslü başlık
+  siteUrl: "https://ugur93.github.io/dugun-davetiye/", // QR kod bu adrese gider
+  // Aile isimlerini yazarsanız davetiyede çiftin isimleri yerine bunlar çıkar, ör.
+  // families: [{ parents: "Ayşe & Ali", surname: "YILMAZ" }, { parents: "Zehra & Mehmet", surname: "DEMİR" }],
+  families: null,
 };
 
 // Masalın sayfaları. Her sayfada bir resim (public/resimler/…) ya da
@@ -45,13 +50,11 @@ export const STORY = [
     image: "resimler/4-deniz.jpg", // yoksa kodla çizilen sahne görünür
     title: "Denizler ve maceralar",
     text:
-      "Birlikte denizler görmüşler, rüzgârlı kıyılarda saçlarını dağıtmışlar, gün batımlarını tek tek saymışlar. Her macera, masallarına yeni bir sayfa eklemiş.",
+      "Birlikte denizler görmüşler, rüzgârlı kıyılarda saçlarını dağıtmışlar, gün batımlarını tek tek saymışlar. Her macera, masallarına yeni bir sayfa eklemiş. Sonunda bir gün delikanlı dizinin üstüne çökmüş ve o soruyu sormuş; prenses gülümseyerek “Evet!” demiş.",
   },
   {
     scene: "royal",
     image: "resimler/5-kral-kralice.jpg", // yoksa kodla çizilen sahne görünür
-    title: "…ve sonsuza kadar",
-    text:
-      "Sonunda delikanlı dizinin üstüne çökmüş ve o soruyu sormuş. Prenses gülümseyerek “Evet!” demiş. Ve sonsuza kadar mutlu yaşamaya karar vermişler.",
+    finale: true, // "Ve Sonsuza Kadar Mutlu Yaşadılar." başlığı + QR kod
   },
 ];
