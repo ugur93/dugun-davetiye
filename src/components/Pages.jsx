@@ -191,7 +191,6 @@ function FinalePage({ chapter }) {
         <div className="life" aria-hidden="true">
           <span className="fly f1"><Swallow /></span>
           <span className="fly f2"><Swallow flip /></span>
-          {[0, 1, 2, 3, 4, 5].map((i) => <span key={i} className={`heart h${i}`}>♥</span>)}
           {[0, 1, 2, 3, 4].map((i) => <span key={i} className={`spark s${i}`}>✦</span>)}
         </div>
       </div>

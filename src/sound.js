@@ -1,5 +1,5 @@
 // Tiny synthesized sound effects (no audio files): paper rustle for page
-// turns, a soft leather creak for the cover, and a wax-seal crack.
+// turns and a soft leather creak for the cover.
 
 let ctx = null;
 let muted = false;
@@ -54,10 +54,4 @@ export function coverCreak() {
   if (muted) return;
   burst({ dur: 0.7, freq: 380, sweep: 220, q: 6, gain: 0.25 });
   burst({ at: 0.45, dur: 0.4, freq: 1800, sweep: 700, q: 0.8, gain: 0.15 });
-}
-
-export function sealCrack() {
-  if (muted) return;
-  burst({ dur: 0.07, freq: 3000, q: 2, gain: 0.5, type: "highpass" });
-  burst({ at: 0.05, dur: 0.12, freq: 900, q: 1.5, gain: 0.3 });
 }

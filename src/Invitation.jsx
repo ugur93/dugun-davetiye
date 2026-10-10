@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Book, { SPREADS, ZoomedPage } from "./components/Book.jsx";
 import Background from "./components/Background.jsx";
-import { Envelope, Rsvp, confetti } from "./components/Extras.jsx";
+import { Rsvp } from "./components/Extras.jsx";
 import { WEDDING } from "./content.js";
 import { coverCreak, pageFlip, setSfxMuted } from "./sound.js";
 
@@ -16,7 +16,7 @@ export default function Invitation() {
   const navigate = useNavigate();
   const spread = spreadFromPath(pathname);
 
-  // names → wax-sealed envelope → book. Deep links go straight to the book.
+  // names → book. Deep links go straight to the book.
   const [phase, setPhase] = useState(spread > 0 ? "book" : "names");
   const [zoom, setZoom] = useState(null);
   const [playing, setPlaying] = useState(false);
@@ -27,22 +27,17 @@ export default function Invitation() {
 
   useEffect(() => {
     if (phase !== "names") return;
-    const t = setTimeout(() => setPhase("envelope"), 3000);
+    const t = setTimeout(() => setPhase("book"), 3000);
     return () => clearTimeout(t);
   }, [phase]);
 
-  // Sound + celebration whenever the visible spread changes (buttons, swipes, back button).
+  // Page sounds whenever the visible spread changes (buttons, swipes, back button).
   const prevSpread = useRef(spread);
-  const celebrated = useRef(false);
   useEffect(() => {
     const before = prevSpread.current;
     prevSpread.current = spread;
     if (before === spread) return;
     before === 0 || spread === 0 ? coverCreak() : pageFlip();
-    if (spread === SPREADS - 1 && !celebrated.current) {
-      celebrated.current = true;
-      setTimeout(() => confetti(), 1200);
-    }
   }, [spread]);
 
   const go = (n) => {
@@ -92,15 +87,13 @@ export default function Invitation() {
     <>
       <Background />
 
-      <div className={`intro${phase !== "names" ? " hide" : ""}`} onClick={() => setPhase("envelope")}>
+      <div className={`intro${phase !== "names" ? " hide" : ""}`} onClick={() => setPhase("book")}>
         <div>
           <h2>{WEDDING.bride}<em>&amp;</em>{WEDDING.groom}</h2>
           <div className="line" />
           {WEDDING.guest && <p className="intro-guest">Sevgili {WEDDING.guest}</p>}
         </div>
       </div>
-
-      {phase !== "book" && <Envelope show={phase === "envelope"} onOpened={() => setPhase("book")} />}
 
       <audio
         ref={audio}

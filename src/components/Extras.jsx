@@ -1,34 +1,5 @@
 import { useEffect, useState } from "react";
 import { WEDDING } from "../content.js";
-import { sealCrack } from "../sound.js";
-
-/* ---------- wax-sealed envelope intro ---------- */
-export function Envelope({ show, onOpened }) {
-  const [state, setState] = useState("closed"); // closed → opening → gone
-  const open = () => {
-    if (state !== "closed") return;
-    sealCrack();
-    setState("opening");
-    setTimeout(() => { setState("gone"); onOpened(); }, 1900);
-  };
-  if (state === "gone") return null;
-  return (
-    <div className={`envelope-wrap${show ? " show" : ""} ${state}`} onClick={open}>
-      <div className="envelope">
-        <div className="env-back" />
-        <div className="letter">
-          {WEDDING.guest && <small>Sevgili {WEDDING.guest},</small>}
-          <b>{WEDDING.bride} &amp; {WEDDING.groom}</b>
-          <span>masalımıza davetlisiniz</span>
-        </div>
-        <div className="env-front" />
-        <div className="env-flap" />
-        <div className="wax">{WEDDING.bride[0]}&amp;{WEDDING.groom[0]}</div>
-      </div>
-      <p className="env-hint">Mührü kırmak için dokun</p>
-    </div>
-  );
-}
 
 /* ---------- confetti ---------- */
 const COLORS = ["#e3c27a", "#b8352c", "#24459a", "#1f7a45", "#fbf3dc", "#f0a3b5"];
