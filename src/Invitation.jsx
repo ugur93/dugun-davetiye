@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Book, { SPREADS, ZoomedPage } from "./components/Book.jsx";
+import Background from "./components/Background.jsx";
+import { Envelope, Rsvp, confetti } from "./components/Extras.jsx";
 import { WEDDING } from "./content.js";
+import { coverCreak, pageFlip, setSfxMuted } from "./sound.js";
 
 const spreadFromPath = (pathname) => {
   const m = pathname.match(/^\/sayfa\/(\d+)/);
@@ -13,7 +16,8 @@ export default function Invitation() {
   const navigate = useNavigate();
   const spread = spreadFromPath(pathname);
 
-  const [introDone, setIntroDone] = useState(spread > 0); // deep links skip the intro
+  // names → wax-sealed envelope → book. Deep links go straight to the book.
+  const [phase, setPhase] = useState(spread > 0 ? "book" : "names");
   const [zoom, setZoom] = useState(null);
   const [playing, setPlaying] = useState(false);
   const [hasMusic, setHasMusic] = useState(false);
@@ -22,10 +26,24 @@ export default function Invitation() {
   const touch = useRef(null);
 
   useEffect(() => {
-    if (introDone) return;
-    const t = setTimeout(() => setIntroDone(true), 3000);
+    if (phase !== "names") return;
+    const t = setTimeout(() => setPhase("envelope"), 3000);
     return () => clearTimeout(t);
-  }, [introDone]);
+  }, [phase]);
+
+  // Sound + celebration whenever the visible spread changes (buttons, swipes, back button).
+  const prevSpread = useRef(spread);
+  const celebrated = useRef(false);
+  useEffect(() => {
+    const before = prevSpread.current;
+    prevSpread.current = spread;
+    if (before === spread) return;
+    before === 0 || spread === 0 ? coverCreak() : pageFlip();
+    if (spread === SPREADS - 1 && !celebrated.current) {
+      celebrated.current = true;
+      setTimeout(() => confetti(), 1200);
+    }
+  }, [spread]);
 
   const go = (n) => {
     const next = Math.min(Math.max(n, 0), SPREADS);
@@ -55,6 +73,7 @@ export default function Invitation() {
     const a = audio.current;
     if (!a) return;
     userMuted.current = !a.paused;
+    setSfxMuted(userMuted.current);
     a.paused ? a.play().catch(() => {}) : a.pause();
   };
 
@@ -71,12 +90,17 @@ export default function Invitation() {
 
   return (
     <>
-      <div className={`intro${introDone ? " hide" : ""}`} onClick={() => setIntroDone(true)}>
+      <Background />
+
+      <div className={`intro${phase !== "names" ? " hide" : ""}`} onClick={() => setPhase("envelope")}>
         <div>
           <h2>{WEDDING.bride}<em>&amp;</em>{WEDDING.groom}</h2>
           <div className="line" />
+          {WEDDING.guest && <p className="intro-guest">Sevgili {WEDDING.guest}</p>}
         </div>
       </div>
+
+      {phase !== "book" && <Envelope show={phase === "envelope"} onOpened={() => setPhase("book")} />}
 
       <audio
         ref={audio}
@@ -98,7 +122,7 @@ export default function Invitation() {
       )}
 
       <main onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-        <div className={`stage${introDone ? " show" : ""}`}>
+        <div className={`stage${phase === "book" ? " show" : ""}`}>
           <div className={`tilt${spread ? " open" : ""}`}>
             <Book spread={spread} onOpen={open} onZoom={setZoom} />
           </div>
@@ -106,7 +130,7 @@ export default function Invitation() {
       </main>
 
       {!spread && (
-        <button className={`open-cta${introDone ? " show" : ""}`} onClick={open}>
+        <button className={`open-cta${phase === "book" ? " show" : ""}`} onClick={open}>
           Masalı aç
         </button>
       )}
@@ -137,6 +161,8 @@ export default function Invitation() {
         {zoom !== null && <ZoomedPage index={zoom} />}
         {zoom !== null && <button className="zoom-back">← Davetiye</button>}
       </div>
+
+      <Rsvp />
     </>
   );
 }

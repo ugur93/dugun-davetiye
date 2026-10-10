@@ -2,7 +2,8 @@ import { useState } from "react";
 import qrcode from "qrcode-generator";
 import { INK } from "./Characters.jsx";
 import { SCENES } from "./Scenes.jsx";
-import { STORY, WEDDING } from "../content.js";
+import { MEMORIES, STORY, WEDDING } from "../content.js";
+import { Countdown, downloadIcs, googleCalendarUrl, openRsvp } from "./Extras.jsx";
 
 const GOLD = "#e3c27a";
 const RED = "#b8352c";
@@ -170,7 +171,15 @@ function FinalePage({ chapter }) {
         </div>
         <QrBox />
       </div>
-      <div className="scene"><Illustration chapter={chapter} /></div>
+      <div className="scene alive">
+        <Illustration chapter={chapter} />
+        <div className="life" aria-hidden="true">
+          <span className="fly f1"><Swallow /></span>
+          <span className="fly f2"><Swallow flip /></span>
+          {[0, 1, 2, 3, 4, 5].map((i) => <span key={i} className={`heart h${i}`}>♥</span>)}
+          {[0, 1, 2, 3, 4].map((i) => <span key={i} className={`spark s${i}`}>✦</span>)}
+        </div>
+      </div>
       <BandBottom />
     </>
   );
@@ -190,6 +199,7 @@ function InvitePage() {
       <Swallow className="bird b1" flip />
       <Swallow className="bird b2" flip />
       <div className="invite-head">
+        {W.guest && <div className="greeting">Sevgili {W.guest},</div>}
         <div className="line1"><Dropcap letter={first} color={GREEN} /><span className="red">{rest.join("")}</span></div>
         <div className="blue">sizleri de yanımızda görmekten</div>
         <div className="red">mutluluk duyarız.</div>
@@ -234,6 +244,48 @@ function InvitePage() {
   );
 }
 
+function MemoriesPage() {
+  return (
+    <>
+      <BandTop />
+      <h3 className="chapter mem-title">Masalımızdan kareler</h3>
+      <div className="polaroids">
+        {MEMORIES.map((m, i) => (
+          <figure key={m.src} className={`polaroid p${i}`}>
+            <span className="tape" />
+            <img src={import.meta.env.BASE_URL + m.src} alt={m.caption} draggable="false" loading="lazy" />
+            <figcaption>{m.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <BandBottom />
+    </>
+  );
+}
+
+function CelebratePage() {
+  const W = WEDDING;
+  return (
+    <>
+      <BandTop />
+      <div className="celebrate">
+        <h3 className="chapter">{W.guest ? `Sevgili ${W.guest},` : "Bizimle kutlar mısınız?"}</h3>
+        <p className="cel-sub">Masalın en güzel gününe</p>
+        <Countdown />
+        <p className="cel-sub">kaldı</p>
+        <div className="actions" onClick={stop}>
+          {W.whatsapp && <button className="act primary" onClick={openRsvp}>Katılımını bildir</button>}
+          <button className="act" onClick={downloadIcs}>Takvime ekle</button>
+          <a className="act" href={googleCalendarUrl()} target="_blank" rel="noopener noreferrer">Google Takvim</a>
+          <a className="act" href={W.mapsUrl} target="_blank" rel="noopener noreferrer">Yol tarifi al</a>
+        </div>
+        <div className="ever">…ve sonsuza kadar mutlu yaşadılar.</div>
+      </div>
+      <BandBottom />
+    </>
+  );
+}
+
 // Book content in reading order: [left, right] for each spread.
 export const PAGES = [
   ...STORY.map((chapter) => {
@@ -241,4 +293,6 @@ export const PAGES = [
     return P;
   }),
   InvitePage,
+  MemoriesPage,
+  CelebratePage,
 ];

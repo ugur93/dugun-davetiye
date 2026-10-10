@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { PAGES } from "./Pages.jsx";
 import { WEDDING } from "../content.js";
 
@@ -39,6 +40,7 @@ function PageFace({ index, side, back, visible, onZoom }) {
       }}
     >
       <Content />
+      <i className="turn-shade" />
     </div>
   );
 }
@@ -54,6 +56,18 @@ export default function Book({ spread, onOpen, onZoom }) {
   const rightVisible = spread ? leftVisible + 1 : -1;
   const lastPage = PAGES.length - 1;
 
+  // Leaves that are mid-turn get a moving shadow so the page looks curved.
+  const prev = useRef(spread);
+  const [turning, setTurning] = useState([]);
+  useEffect(() => {
+    const a = Math.min(prev.current, spread), b = Math.max(prev.current, spread);
+    prev.current = spread;
+    if (a === b) return;
+    setTurning(Array.from({ length: b - a }, (_, k) => a + k));
+    const t = setTimeout(() => setTurning([]), 1800);
+    return () => clearTimeout(t);
+  }, [spread]);
+
   return (
     <div className={`book${spread ? " open" : ""}`}>
       <div className="shadow" />
@@ -66,7 +80,7 @@ export default function Book({ spread, onOpen, onZoom }) {
         return (
           <div
             key={i}
-            className={`leaf${i === 0 ? " cover" : ""}`}
+            className={`leaf${i === 0 ? " cover" : ""}${turning.includes(i) ? (i < spread ? " turning fwd" : " turning back") : ""}`}
             style={{ transform: `translateZ(${z}px) rotateY(${flipped ? -180 : 0}deg)` }}
             onClick={i === 0 && !spread ? onOpen : undefined}
           >

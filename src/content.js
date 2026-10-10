@@ -19,7 +19,20 @@ export const WEDDING = {
   // Aile isimlerini yazarsanız davetiyede çiftin isimleri yerine bunlar çıkar, ör.
   // families: [{ parents: "Ayşe & Ali", surname: "YILMAZ" }, { parents: "Zehra & Mehmet", surname: "DEMİR" }],
   families: null,
+  // Geri sayım ve "Takvime ekle" için (saat değişirse burayı da güncelleyin)
+  dateISO: "2027-07-04T19:00:00+03:00",
+  durationHours: 6,
+  // Katılım bildirimi bu WhatsApp numarasına gelir, ör. "905551112233" (boşsa buton gizlenir)
+  whatsapp: "",
+  // Kişiye özel link: …/dugun-davetiye/?misafir=Ayşe%20Teyze → "Sevgili Ayşe Teyze"
+  guest: new URLSearchParams(window.location.search).get("misafir")?.trim().slice(0, 40) || "",
 };
+
+// Anı sayfasındaki fotoğraflar (public/resimler/ içinde)
+export const MEMORIES = [
+  { src: "resimler/ani-1.jpg", caption: "Çiçekli sokaklarda" },
+  { src: "resimler/ani-2.jpg", caption: "Rüzgârlı kıyılarda" },
+];
 
 // Masalın sayfaları. Her sayfada bir resim (public/resimler/…) ya da
 // resim yoksa kodla çizilmiş bir sahne (scene) ve metin var.
