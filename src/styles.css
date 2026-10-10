@@ -114,7 +114,7 @@ main {
   margin: 0 -4cqw 4cqw; padding: 1.4cqw; background: #d7b06a; border-radius: 1cqw;
   box-shadow: 0 .6cqw 1.6cqw rgba(0, 0, 0, .6), inset 0 0 0 .4cqw #8a6a2a;
 }
-.plate img { display: block; width: 100%; aspect-ratio: 1264 / 848; object-fit: cover; border-radius: .5cqw; border: .3cqw solid #5c3a14; }
+.plate img { display: block; width: 100%; height: auto; border-radius: .5cqw; border: .3cqw solid #5c3a14; }
 .cover-text p { font-style: italic; font-size: 5.6cqw; line-height: 1.2; color: #cfa766; text-shadow: 0 .25cqw 0 rgba(40, 20, 5, .8); }
 
 /* ---------- parchment pages ---------- */
@@ -126,7 +126,7 @@ main {
   background-size: cover;
   color: var(--ink);
   display: flex; flex-direction: column;
-  padding: 4.5cqw 5cqw 4cqw;
+  padding: 3.5cqw 3.5cqw 3cqw;
   cursor: zoom-in;
 }
 .page.left { border-radius: 10px 3px 3px 10px; }
@@ -149,14 +149,14 @@ main {
 
 .chapter {
   font-family: "Almendra", serif; font-weight: 700; color: var(--red);
-  font-size: 6.4cqw; text-align: center; margin: 2.5cqw 0 1cqw; line-height: 1.05;
+  font-size: 7.4cqw; text-align: center; margin: 1.8cqw 0 1.2cqw; line-height: 1.05;
 }
 .scene { flex: 1; min-height: 0; display: flex; align-items: flex-end; justify-content: center; }
 .scene svg, .scene img { width: 100%; height: 100%; }
-.scene img { object-fit: contain; object-position: center bottom; mix-blend-mode: multiply; user-select: none; }
-.story { font-size: 4.3cqw; line-height: 1.28; font-weight: 600; margin: 2.5cqw 0 1cqw; text-align: left; }
+.scene img { object-fit: contain; object-position: center; mix-blend-mode: multiply; user-select: none; border-radius: 1cqw; }
+.story { font-size: 5.1cqw; line-height: 1.3; font-weight: 600; margin: 2cqw 1cqw .5cqw; text-align: left; }
 .dropcap {
-  float: left; position: relative; width: 11cqw; height: 11cqw; margin: .6cqw 2cqw 0 0;
+  float: left; position: relative; width: 12.5cqw; height: 12.5cqw; margin: .6cqw 2cqw 0 0;
   background: #fbf3dc; border: .45cqw solid var(--ink);
   box-shadow: inset 0 0 0 .7cqw var(--red), inset 0 0 0 .95cqw var(--gold);
   display: grid; place-items: center;
@@ -164,7 +164,7 @@ main {
 .dropcap svg { position: absolute; inset: 1cqw; width: calc(100% - 2cqw); height: calc(100% - 2cqw); }
 .dropcap b {
   position: relative; font-family: "Almendra", serif; font-weight: 700;
-  font-size: 8.4cqw; line-height: 1; color: var(--blue);
+  font-size: 9.6cqw; line-height: 1; color: var(--blue);
   text-shadow: .25cqw .25cqw 0 var(--gold-2);
 }
 .dropcap.big { float: none; flex: none; width: 14cqw; height: 14cqw; margin: 0; }
@@ -172,23 +172,23 @@ main {
 .folio { text-align: center; font-size: 3.4cqw; font-style: italic; opacity: .6; margin-bottom: 1.5cqw; }
 
 .head { display: flex; align-items: flex-start; gap: 2.5cqw; margin: 3cqw 0 1cqw; }
-.head .lead { font-family: "Almendra", serif; font-weight: 700; font-size: 6.2cqw; line-height: 1.1; color: var(--red); padding-top: 1cqw; }
+.head .lead { font-family: "Almendra", serif; font-weight: 700; font-size: 7cqw; line-height: 1.1; color: var(--red); padding-top: 1cqw; }
 .head .lead .ink { color: var(--blue); }
 .couple {
   font-family: "Almendra", serif; font-weight: 700; text-align: center;
-  font-size: 13cqw; color: var(--blue); line-height: 1; margin: auto 0 4cqw;
+  font-size: 16cqw; color: var(--blue); line-height: 1; margin: auto 0 6cqw;
 }
 .couple span { color: var(--red); font-size: .6em; padding: 0 2cqw; }
-.details { list-style: none; display: grid; gap: 3.4cqw; padding: 0 2cqw; margin-bottom: auto; }
-.details li { display: flex; gap: 3cqw; align-items: center; font-size: 5cqw; line-height: 1.15; font-weight: 700; }
+.details { list-style: none; display: grid; gap: 4.5cqw; padding: 0 2cqw; margin-bottom: auto; }
+.details li { display: flex; gap: 3.5cqw; align-items: center; font-size: 6cqw; line-height: 1.15; font-weight: 700; }
 .details small { display: block; font-weight: 500; font-style: italic; font-size: .85em; }
 .details a { color: var(--blue); text-decoration-thickness: .3cqw; text-underline-offset: .6cqw; }
 .ico {
-  flex: none; width: 9cqw; height: 9cqw; display: grid; place-items: center;
+  flex: none; width: 11cqw; height: 11cqw; display: grid; place-items: center;
   background: var(--red); border: .45cqw solid var(--ink); box-shadow: inset 0 0 0 .5cqw var(--gold);
 }
 .ico svg { width: 55%; height: 55%; fill: var(--gold-2); }
-.ever { text-align: center; font-family: "Almendra", serif; font-style: italic; color: var(--green); font-size: 5cqw; margin: 3cqw 0 2.5cqw; }
+.ever { text-align: center; font-family: "Almendra", serif; font-style: italic; color: var(--green); font-size: 6cqw; margin: 3cqw 0 2.5cqw; }
 
 /* ---------- bottom UI ---------- */
 .open-cta {
