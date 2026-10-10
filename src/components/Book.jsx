@@ -13,7 +13,12 @@ function Cover() {
           <circle cx="50" cy="8" r="1.6" fill="currentColor" /><circle cx="70" cy="8" r="1.6" fill="currentColor" />
         </svg>
         <h1>{WEDDING.bride}<em>&amp;</em>{WEDDING.groom}</h1>
-        <p>Bir varmış,<br />bir yokmuş…</p>
+        {WEDDING.cover && (
+          <div className="plate">
+            <img src={import.meta.env.BASE_URL + WEDDING.cover} alt="" draggable="false" />
+          </div>
+        )}
+        <p>Bir varmış, bir yokmuş…</p>
         <svg className="orn" viewBox="0 0 120 16" fill="none" stroke="currentColor" strokeWidth="1.2" style={{ marginTop: "2cqw" }}>
           <path d="M2 8c20 0 28-6 40-6s14 6 18 6 6-6 18-6 20 6 40 6" />
         </svg>

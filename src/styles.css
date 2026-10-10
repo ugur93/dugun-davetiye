@@ -12,13 +12,13 @@
   --ease: cubic-bezier(.55, .05, .3, 1);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body, #root { height: 100%; }
+html, body, #root { height: 100%; overflow: hidden; overscroll-behavior: none; }
 body {
   background-color: var(--bg);
   background-image:
     radial-gradient(ellipse 70% 55% at 50% 42%, rgba(120, 80, 45, .32), transparent 70%),
     radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0, 0, 0, .75) 100%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.09 0.0035' numOctaves='4' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0.20 0 0 0 0 0.13 0 0 0 0 0.08 0 0 0 1.1 -0.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.09 0.0035' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.20 0 0 0 0 0.13 0 0 0 0 0.08 0 0 0 1.1 -0.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
   color: var(--text);
   font-family: "Cormorant Garamond", Georgia, serif;
   overflow: hidden;
@@ -44,7 +44,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* ---------- 3D stage ---------- */
 main {
-  height: 100svh; display: flex; align-items: center; justify-content: center;
+  height: 100svh; overflow: hidden; position: relative; z-index: 0; isolation: isolate; display: flex; align-items: center; justify-content: center;
   padding: 60px 16px calc(120px + env(safe-area-inset-bottom));
 }
 .stage {
@@ -60,7 +60,8 @@ main {
   --w: min(94vw, 860px, calc((100svh - 200px) * 1.5));
   width: var(--w); height: calc(var(--w) / 1.5);
   position: relative; transform-style: preserve-3d;
-  transform: translateX(-25%) scale(1.12);
+  transform: translateX(-25%) scale(var(--closed, 1.12));
+  transform-origin: 75% 50%; /* scale around the closed cover */
   transition: transform 1.8s var(--ease);
 }
 .book.open { transform: none; }
@@ -102,13 +103,18 @@ main {
   content: ""; position: absolute; inset: 3cqw; border-radius: 1.5cqw;
   box-shadow: inset 0 0 0 .35cqw rgba(30, 15, 5, .5), 0 0 0 .3cqw rgba(220, 170, 110, .12);
 }
-.cover-text { position: relative; text-align: center; padding: 0 14cqw; }
+.cover-text { position: relative; text-align: center; padding: 0 12cqw; }
 .cover-text .orn { width: 34cqw; height: auto; color: var(--gold-2); opacity: .8; }
 .cover-text h1 {
-  font-weight: 600; font-size: 14cqw; line-height: 1; margin: 2cqw 0; color: #d7b06a;
+  font-weight: 600; font-size: 11.5cqw; line-height: 1; margin: 2cqw 0 4cqw; color: #d7b06a; white-space: nowrap;
   text-shadow: 0 .3cqw 0 rgba(40, 20, 5, .8), 0 -.2cqw 0 rgba(255, 225, 160, .35);
 }
-.cover-text h1 em { display: block; font-size: 7cqw; font-style: italic; margin: 1cqw 0; }
+.cover-text h1 em { font-size: 7cqw; font-style: italic; padding: 0 2cqw; }
+.plate {
+  margin: 0 -4cqw 4cqw; padding: 1.4cqw; background: #d7b06a; border-radius: 1cqw;
+  box-shadow: 0 .6cqw 1.6cqw rgba(0, 0, 0, .6), inset 0 0 0 .4cqw #8a6a2a;
+}
+.plate img { display: block; width: 100%; aspect-ratio: 1264 / 848; object-fit: cover; border-radius: .5cqw; border: .3cqw solid #5c3a14; }
 .cover-text p { font-style: italic; font-size: 5.6cqw; line-height: 1.2; color: #cfa766; text-shadow: 0 .25cqw 0 rgba(40, 20, 5, .8); }
 
 /* ---------- parchment pages ---------- */
@@ -249,6 +255,18 @@ main {
   font-size: 16px; opacity: .85; display: flex; gap: 8px; align-items: center;
 }
 .zoom .page { max-height: calc(100svh - 80px); width: min(92vw, calc((100svh - 80px) * .75)); }
+
+/* ---------- phones (portrait) ---------- */
+@media (max-aspect-ratio: 4/5) {
+  main { padding: 56px 8px calc(130px + env(safe-area-inset-bottom)); }
+  .book { --w: min(98vw, calc((100svh - 220px) * 1.5)); --closed: 1.6; }
+  .tilt { transform: rotateX(16deg) rotateZ(-3deg); }
+  .tilt.open { transform: rotateX(8deg) rotateZ(-1.5deg); }
+  .ui { flex-wrap: wrap; gap: 10px; }
+  .mid { order: -1; flex-basis: 100%; }
+  .hint { font-size: 13px; }
+  .btn { padding: 10px 14px; font-size: 14px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01s !important; animation-delay: 0s !important; transition-duration: .01s !important; transition-delay: 0s !important; }

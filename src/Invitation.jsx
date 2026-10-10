@@ -76,14 +76,16 @@ export default function Invitation() {
 
       <audio
         ref={audio}
-        src={import.meta.env.BASE_URL + WEDDING.music}
         loop
-        preload="auto"
-        onCanPlay={() => setHasMusic(true)}
-        onError={() => setHasMusic(false)}
+        preload="metadata"
+        onLoadedMetadata={() => setHasMusic(true)}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
-      />
+      >
+        {WEDDING.music.map((file) => (
+          <source key={file} src={import.meta.env.BASE_URL + file} type={file.endsWith(".mp3") ? "audio/mpeg" : "audio/mp4"} />
+        ))}
+      </audio>
       {hasMusic && (
         <button className={`music${playing ? "" : " muted"}`} onClick={toggleMusic} aria-label="Müziği aç/kapat">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z" /></svg>
@@ -114,7 +116,7 @@ export default function Invitation() {
             ))}
           </div>
           <p className="hint">
-            {last ? "Yakından görmek için bir sayfaya dokun" : "Sayfayı çevirmek için kaydır ya da oka bas"}
+            {last ? "Yakından görmek için bir sayfaya dokun" : "Okumak için sayfaya dokun · çevirmek için kaydır"}
           </p>
         </div>
         {last ? (
