@@ -12,7 +12,7 @@ export const WEDDING = {
     "https://www.google.com/maps/search/?api=1&query=" +
     encodeURIComponent("Seyirtepe Düğün Saklıvadi Bahçe İzmir"),
   // public/ klasöründeki ilk bulunan dosya çalar: kendi şarkınızı muzik.mp3 olarak koyun
-  music: ["muzik.mp3", "muzik.m4a"],
+  music: ["muzik.mp3"],
   cover: "resimler/kapak.jpg", // kapağın ortasındaki resim
   event: "Düğün törenimizde", // davetiye sayfasındaki süslü başlık
   siteUrl: "https://ugur93.github.io/dugun-davetiye/", // QR kod bu adrese gider
