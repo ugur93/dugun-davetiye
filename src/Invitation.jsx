@@ -21,26 +21,6 @@ export default function Invitation() {
   const userMuted = useRef(false);
   const touch = useRef(null);
 
-  // Start the music right away. Browsers block sound until the visitor
-  // interacts with the page, so if autoplay is refused we retry on the
-  // very first tap / click / key press anywhere.
-  useEffect(() => {
-    const events = ["pointerdown", "pointerup", "touchend", "click", "keydown"];
-    const stopListening = () => events.forEach((ev) => document.removeEventListener(ev, onInteract, true));
-    const start = () => {
-      const a = audio.current;
-      if (!a || userMuted.current || !a.paused) return;
-      a.play().then(stopListening).catch(() => {});
-    };
-    function onInteract(e) {
-      if (e.target.closest?.(".music")) return; // the music button handles itself
-      start();
-    }
-    events.forEach((ev) => document.addEventListener(ev, onInteract, true));
-    start();
-    return stopListening;
-  }, []);
-
   useEffect(() => {
     if (introDone) return;
     const t = setTimeout(() => setIntroDone(true), 3000);
@@ -53,6 +33,8 @@ export default function Invitation() {
     navigate(next ? `/sayfa/${next}` : "/");
   };
 
+  // Music starts with the visitor's "Masalı aç" tap (a user gesture, so
+  // browsers allow sound), unless they muted it with the music button.
   const open = () => {
     if (!userMuted.current) audio.current?.play().catch(() => {});
     go(1);
