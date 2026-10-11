@@ -58,5 +58,5 @@ create();
 // Call from a tap: browsers only allow sound after a user gesture.
 export const unlockSfx = () => audio();
 
-export const pageFlip = () => play("flip", 0.8);
-export const coverCreak = () => play("cover", 0.9);
+export const pageFlip = () => play("flip", 0.6);
+export const coverCreak = () => play("cover", 0.75);
