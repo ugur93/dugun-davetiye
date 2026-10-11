@@ -72,15 +72,17 @@ main {
 }
 .book.open .shadow { left: -2%; }
 
-.page-right, .leaf { position: absolute; top: 0; left: 50%; width: 50%; height: 100%; }
-.leaf { transform-origin: left center; transform-style: preserve-3d; transition: transform 1.5s var(--ease); }
-.leaf.cover { transition-duration: 1.8s; }
-.book:not(.open) .leaf.cover { cursor: pointer; }
-.face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; }
-.face.back { transform: rotateY(180deg); }
+/* page-flip book */
+.flip-host { position: absolute; inset: 0; }
+.pf-page { overflow: hidden; }
+.pf-page > .page { position: absolute; inset: 0; }
+.pf-page[data-density="hard"] { border-radius: 4px 12px 12px 4px; }
+.back-cover { border-radius: 12px 4px 4px 12px; }
+.back-cover .cover-text p { font-size: 7cqw; }
 
 /* ---------- worn leather cover ---------- */
 .cover-front {
+  position: absolute; inset: 0;
   border-radius: 4px 12px 12px 4px;
   background-color: #5c371b;
   background-image:
@@ -446,32 +448,6 @@ main {
 .spark.s4 { left: 50%; top: 2%; animation-delay: 2.3s; font-size: 2.6cqw; }
 @keyframes twinkle { 0%, 100% { opacity: 0; transform: scale(.4) rotate(0); } 50% { opacity: 1; transform: scale(1.1) rotate(45deg); } }
 
-/* ---------- "tap to zoom" badge on each visible page ---------- */
-.zoom-badge {
-  position: absolute; z-index: 6; right: 3cqw; bottom: 9.5cqw;
-  width: max(30px, 11cqw); height: max(30px, 11cqw); border-radius: 50%;
-  display: grid; place-items: center; pointer-events: none;
-  background: rgba(251, 243, 220, .92); border: max(1.5px, .5cqw) solid #a8261f;
-  box-shadow: 0 .6cqw 1.6cqw rgba(44, 29, 16, .45), inset 0 0 0 max(1px, .4cqw) #e3c27a;
-  opacity: 0; scale: .6; transition: opacity .5s ease 1.4s, scale .5s ease 1.4s;
-}
-.zoom-badge.on { opacity: 1; scale: 1; }
-.zoom-badge svg { width: 58%; height: 58%; }
-.zoom-badge::after {
-  content: ""; position: absolute; inset: -.4cqw; border-radius: 50%;
-  border: max(1.5px, .5cqw) solid #e3c27a; animation: ping 2.2s ease-out infinite;
-}
-@keyframes ping { 0% { opacity: .9; scale: 1; } 100% { opacity: 0; scale: 1.7; } }
-
-/* ---------- curved page turn shading ---------- */
-.turn-shade {
-  position: absolute; inset: 0; z-index: 5; pointer-events: none; opacity: 0;
-  background: linear-gradient(90deg, rgba(40, 20, 5, .45), rgba(255, 240, 210, .28) 42%, rgba(40, 20, 5, .12) 68%, transparent);
-}
-.page.left .turn-shade { transform: scaleX(-1); }
-.leaf.turning .turn-shade { animation: turnShade 1.5s ease-in-out; }
-@keyframes turnShade { 0% { opacity: 0; } 45% { opacity: 1; } 100% { opacity: 0; } }
-
 /* ---------- memories ---------- */
 .mem-title { margin-top: 3cqw; }
 .polaroids { position: relative; flex: 1; min-height: 0; }
@@ -551,3 +527,11 @@ main {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01s !important; animation-delay: 0s !important; transition-duration: .01s !important; transition-delay: 0s !important; }
 }
+
+.book:not(.open) .flip-host { cursor: pointer; }
+/* the finale video has its own swallows */
+.scene.alive:has(video) .fly { display: none; }
+
+/* real parchment photo (public/resimler/sayfa.jpg) replaces the drawn paper */
+.real-paper .page { background: var(--paper) center / cover no-repeat; box-shadow: none; }
+.real-paper .page::before { opacity: .35; }

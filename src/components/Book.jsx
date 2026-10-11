@@ -1,12 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { PageFlip } from "page-flip";
 import { PAGES } from "./Pages.jsx";
 import { WEDDING } from "../content.js";
+import { coverCreak, pageFlip } from "../sound.js";
 
 export const SPREADS = PAGES.length / 2;
 
+// page-flip indices: 0 = cover, then PAGES[i] is page i + 1, so spread n
+// shows pages 2n-1 (left) and 2n (right); the last index is the back cover.
+const indexToSpread = (i) => (i === 0 ? 0 : Math.min(Math.ceil(i / 2), SPREADS));
+const spreadToIndex = (s) => (s ? 2 * s - 1 : 0);
+
 function Cover() {
   return (
-    <div className="face cover-front">
+    <div className="cover-front">
       <div className="emboss" />
       <div className="cover-text">
         <svg className="orn" viewBox="0 0 120 16" fill="none" stroke="currentColor" strokeWidth="1.2">
@@ -28,76 +35,88 @@ function Cover() {
   );
 }
 
-function PageFace({ index, side, back, visible, onZoom }) {
-  const Content = PAGES[index];
-  return (
-    <div
-      className={`face page ${side}${back ? " back" : ""}`}
-      onClick={(e) => {
-        if (!visible) return;
-        e.stopPropagation();
-        onZoom(index);
-      }}
-    >
-      <Content />
-      <i className="turn-shade" />
-      <span className={`zoom-badge${visible ? " on" : ""}`} aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#1f3f8f" strokeWidth="2.4" strokeLinecap="round">
-          <circle cx="10.5" cy="10.5" r="6" /><path d="M15 15l5 5M10.5 8v5M8 10.5h5" />
-        </svg>
-      </span>
-    </div>
-  );
-}
-
 /**
- * spread: 0 = closed, 1..SPREADS = open at that spread.
- * Leaf 0 is the cover (front) with page 0 on its back; leaf i carries
- * page 2i-1 on its front and page 2i on its back. The last right page is fixed.
+ * A real page-curl book (page-flip). Pages can be dragged by their corners
+ * or turned via the `spread` prop (0 = closed, 1..SPREADS = open spread).
+ * A short tap opens the cover, or zooms the tapped page when open.
  */
-export default function Book({ spread, onOpen, onZoom }) {
-  const leaves = Array.from({ length: SPREADS }, (_, i) => i);
-  const leftVisible = spread ? 2 * (spread - 1) : -1;
-  const rightVisible = spread ? leftVisible + 1 : -1;
-  const lastPage = PAGES.length - 1;
+export default function Book({ spread, onOpen, onZoom, onFlip }) {
+  const host = useRef(null);
+  const pf = useRef(null);
+  const latest = useRef({ spread, onOpen, onZoom, onFlip });
+  latest.current = { spread, onOpen, onZoom, onFlip };
 
-  // Leaves that are mid-turn get a moving shadow so the page looks curved.
-  const prev = useRef(spread);
-  const [turning, setTurning] = useState([]);
   useEffect(() => {
-    const a = Math.min(prev.current, spread), b = Math.max(prev.current, spread);
-    prev.current = spread;
-    if (a === b) return;
-    setTurning(Array.from({ length: b - a }, (_, k) => a + k));
-    const t = setTimeout(() => setTurning([]), 1800);
-    return () => clearTimeout(t);
+    // page-flip moves the page nodes into its own wrapper, so it is created
+    // once and kept for the life of the page (React StrictMode runs effects twice).
+    if (pf.current) return;
+    const book = new PageFlip(host.current, {
+      width: 600,
+      height: 800,
+      size: "stretch",
+      minWidth: 80,
+      maxWidth: 1200,
+      minHeight: 106,
+      maxHeight: 1600,
+      showCover: true,
+      usePortrait: false,
+      drawShadow: true,
+      maxShadowOpacity: 0.55,
+      flippingTime: 1100,
+      disableFlipByClick: true, // taps open the zoom instead
+      mobileScrollSupport: false,
+      showPageCorners: true,
+      startPage: spreadToIndex(latest.current.spread),
+    });
+    book.loadFromHTML(host.current.querySelectorAll(".pf-page"));
+    book.on("changeState", (e) => {
+      if (e.data !== "flipping") return;
+      book.getCurrentPageIndex() === 0 ? coverCreak() : pageFlip();
+    });
+    book.on("flip", (e) => latest.current.onFlip(indexToSpread(e.data)));
+    pf.current = book;
+  }, []);
+
+  // Route changes (buttons, keys, back button) turn the pages.
+  useEffect(() => {
+    const book = pf.current;
+    if (!book) return;
+    if (indexToSpread(book.getCurrentPageIndex()) !== spread) book.flip(spreadToIndex(spread), "top");
   }, [spread]);
+
+  // A tap (not a drag) opens the book, or zooms the tapped page.
+  const down = useRef(null);
+  const onPointerDown = (e) => (down.current = { x: e.clientX, y: e.clientY, t: Date.now() });
+  const onPointerUp = (e) => {
+    const d = down.current;
+    down.current = null;
+    if (!d || Math.hypot(e.clientX - d.x, e.clientY - d.y) > 8 || Date.now() - d.t > 500) return;
+    if (e.target.closest("a, button")) return;
+    const { spread: s, onOpen: open, onZoom: zoom } = latest.current;
+    if (!s) return open();
+    if (pf.current?.getState() !== "read") return;
+    const r = host.current.getBoundingClientRect();
+    const right = e.clientX > r.left + r.width / 2;
+    zoom(2 * (s - 1) + (right ? 1 : 0));
+  };
 
   return (
     <div className={`book${spread ? " open" : ""}`}>
       <div className="shadow" />
-      <div className="page-right" style={{ transform: "translateZ(1px)" }}>
-        <PageFace index={lastPage} side="right" visible={rightVisible === lastPage} onZoom={onZoom} />
-      </div>
-      {leaves.map((i) => {
-        const flipped = i < spread;
-        const z = flipped ? (i + 1) * 2 + 1 : (SPREADS - i) * 2 + 1;
-        return (
-          <div
-            key={i}
-            className={`leaf${i === 0 ? " cover" : ""}${turning.includes(i) ? (i < spread ? " turning fwd" : " turning back") : ""}`}
-            style={{ transform: `translateZ(${z}px) rotateY(${flipped ? -180 : 0}deg)` }}
-            onClick={i === 0 && !spread ? onOpen : undefined}
-          >
-            {i === 0 ? (
-              <Cover />
-            ) : (
-              <PageFace index={2 * i - 1} side="right" visible={rightVisible === 2 * i - 1} onZoom={onZoom} />
-            )}
-            <PageFace index={2 * i} side="left" back visible={leftVisible === 2 * i} onZoom={onZoom} />
+      <div className="flip-host" ref={host} onPointerDown={onPointerDown} onPointerUp={onPointerUp}>
+        <div className="pf-page" data-density="hard"><Cover /></div>
+        {PAGES.map((Content, i) => (
+          <div className="pf-page" key={i}>
+            <div className={`page ${i % 2 ? "right" : "left"}`}><Content /></div>
           </div>
-        );
-      })}
+        ))}
+        <div className="pf-page" data-density="hard">
+          <div className="cover-front back-cover">
+            <div className="emboss" />
+            <div className="cover-text"><p>…ve sonsuza kadar<br />mutlu yaşadılar.</p></div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

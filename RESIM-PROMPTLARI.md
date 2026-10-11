@@ -183,3 +183,32 @@ Kaydetme:
 - Yatay video → **`public/arka-plan.mp4`** (bilgisayar ve tablet)
 - Dikey video → **`public/arka-plan-dikey.mp4`** (telefon)
 - Sadece biri olursa o her yerde kullanılır. Videolar 5 MB'tan büyükse söyleyin, küçültürüm.
+
+---
+
+## Gerçekçi sayfa kâğıdı: `sayfa.jpg`
+
+Sayfalardaki yazılar, süslemeler ve resimler kodla üstüne yerleşiyor. Bu görsel yalnızca **boş kâğıdın kendisi**. İçinde yazı ya da süs olmamalı, kenar kenara kâğıt olmalı.
+
+**Araç:** ChatGPT / Gemini / Midjourney. **Format:** dikey 3:4 (ör. 1536×2048).
+
+```
+Flat, evenly lit top-down scan of a single blank sheet of antique parchment paper,
+filling the entire frame edge to edge (no background, no table, no visible page
+border). Warm cream and light honey color, slightly darker and more yellowed toward
+the edges. Subtle natural aging: fine paper fibres, faint tea-colored stains, a few
+tiny foxing spots, very soft creases, gentle uneven tone like a 500-year-old book
+page. Realistic, high resolution, photographic texture.
+
+Absolutely empty: no text, no letters, no drawings, no ornaments, no borders, no
+shadows from objects. The middle must stay light and even so dark text stays
+readable on it.
+```
+
+İpuçları:
+- Ortası çok koyu ya da lekeli çıkarsa: "make the center lighter and cleaner" yazın.
+- Kâğıdın kenarında masa ya da gölge görünürse: "the paper must fill the whole image edge to edge" yazın.
+- Kaydedin: **`public/resimler/sayfa.jpg`**. Site bunu otomatik olarak bütün sayfalarda kullanır, kodla çizilen kâğıdı devre dışı bırakır.
+
+### Telefon için dikey arka plan videosu
+Yatay `arka-plan.mp4` telefonda kenarlarından kırpılıyor, mumlar ve güller ekrandan çıkıyor. Aynı promptla **9:16 dikey** bir versiyon üretip `public/arka-plan-dikey.mp4` olarak koyarsanız telefonda o kullanılır.

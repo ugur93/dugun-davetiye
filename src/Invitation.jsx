@@ -4,7 +4,7 @@ import Book, { SPREADS, ZoomedPage } from "./components/Book.jsx";
 import Background from "./components/Background.jsx";
 import { Rsvp } from "./components/Extras.jsx";
 import { WEDDING } from "./content.js";
-import { coverCreak, pageFlip, setSfxMuted } from "./sound.js";
+import { setSfxMuted } from "./sound.js";
 
 const spreadFromPath = (pathname) => {
   const m = pathname.match(/^\/sayfa\/(\d+)/);
@@ -15,7 +15,7 @@ const spreadFromPath = (pathname) => {
 function fadeIn(a, ms = 1500) {
   const t0 = Date.now();
   const id = setInterval(() => {
-    a.volume = Math.min(1, (Date.now() - t0) / ms);
+    a.volume = Math.max(0, Math.min(1, (Date.now() - t0) / ms));
     if (a.volume >= 1 || a.paused) clearInterval(id);
   }, 50);
 }
@@ -32,7 +32,6 @@ export default function Invitation() {
   const [hasMusic, setHasMusic] = useState(false);
   const audio = useRef(null);
   const userMuted = useRef(false);
-  const touch = useRef(null);
 
   useEffect(() => {
     if (phase !== "names") return;
@@ -40,13 +39,12 @@ export default function Invitation() {
     return () => clearTimeout(t);
   }, [phase]);
 
-  // Page sounds whenever the visible spread changes (buttons, swipes, back button).
+  // Music starts as soon as the book opens, however it was opened.
   const prevSpread = useRef(spread);
   useEffect(() => {
     const before = prevSpread.current;
     prevSpread.current = spread;
     if (before === spread) return;
-    before === 0 || spread === 0 ? coverCreak() : pageFlip();
     if (before === 0) startMusic(); // the first page just opened
   }, [spread]);
 
@@ -109,14 +107,6 @@ export default function Invitation() {
     } else a.pause();
   };
 
-  const onTouchStart = (e) => (touch.current = e.touches[0].clientX);
-  const onTouchEnd = (e) => {
-    if (touch.current == null || !spread) return;
-    const dx = e.changedTouches[0].clientX - touch.current;
-    touch.current = null;
-    if (dx < -45) next();
-    else if (dx > 45) prev();
-  };
 
   const last = spread === SPREADS;
 
@@ -158,10 +148,10 @@ export default function Invitation() {
         </button>
       )}
 
-      <main onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <main>
         <div className={`stage${phase === "book" ? " show" : ""}`}>
           <div className={`tilt${spread ? " open" : ""}`}>
-            <Book spread={spread} onOpen={open} onZoom={setZoom} />
+            <Book spread={spread} onOpen={open} onZoom={setZoom} onFlip={(s) => s !== spread && go(s)} />
           </div>
         </div>
       </main>

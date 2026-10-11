@@ -16,6 +16,7 @@ export const WEDDING = {
   music: ["muzik.mp3"],
   musicStart: 8.5, // şarkının ilk 8,5 saniyesi çok sessiz: kitap açılınca buradan başlar
   cover: "resimler/kapak.jpg", // kapağın ortasındaki resim
+  paper: "resimler/sayfa.jpg", // gerçek parşömen dokusu (yoksa kodla çizilen kâğıt kullanılır)
   // Hareketli arka plan videoları (public/ içinde). Yoksa çizilmiş mum ışıklı masa görünür.
   backgroundVideo: { wide: "arka-plan.mp4", tall: "arka-plan-dikey.mp4" },
   event: "Düğün törenimizde", // davetiye sayfasındaki süslü başlık
