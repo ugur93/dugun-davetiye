@@ -573,3 +573,18 @@ main {
   .open-cta { bottom: 10px; }
   .open-cta::before { display: none; }
 }
+
+/* ---------- "Yer" → map, and the way back ---------- */
+.venue-link {
+  font: inherit; color: inherit; text-align: left; cursor: pointer; padding: 0;
+  text-decoration: underline; text-decoration-color: rgba(168, 38, 31, .5); text-underline-offset: .8cqw;
+}
+.venue-link small { display: block; font-size: .78em; color: #a8261f; font-style: italic; text-decoration: none; }
+.go-back {
+  position: fixed; left: 50%; top: calc(16px + env(safe-area-inset-top)); translate: -50% 0; z-index: 30;
+  display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px;
+  background: rgba(20, 14, 8, .82); border: 1px solid var(--gold); color: var(--text);
+  font: 600 15px "Cormorant Garamond", serif; box-shadow: 0 8px 24px rgba(0, 0, 0, .45);
+  animation: fadeUp .5s ease;
+}
+.go-back svg { width: 16px; height: 16px; }

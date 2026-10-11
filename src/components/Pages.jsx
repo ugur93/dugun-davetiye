@@ -241,7 +241,10 @@ function InvitePage() {
           <Tile frame={GREEN}>
             <svg viewBox="0 0 24 24"><path d="M12 3a6.5 6.5 0 0 0-6.5 6.5c0 4.9 6.5 12 6.5 12s6.5-7.1 6.5-12A6.5 6.5 0 0 0 12 3z" fill={RED} stroke={INK} /><circle cx="12" cy="9.5" r="2.4" fill="#fbf3dc" /></svg>
           </Tile>
-          <div>Yer: {W.venue}</div>
+          <button className="venue-link" onClick={(e) => { e.stopPropagation(); goToMap(); }}>
+            Yer: {W.venue}
+            <small>Yol tarifi ve harita ›</small>
+          </button>
         </li>
         <li>
           <Tile frame={GOLD}>
@@ -350,8 +353,13 @@ export const PAGES = [
     return P;
   }),
   InvitePage,
-  MapPage,
-  TravelPage,
   MemoriesPage,
   CelebratePage,
+  MapPage, // the map + directions spread is always the last one
+  TravelPage,
 ];
+
+// Spread that shows the map (left) and the directions (right).
+export const MAP_SPREAD = PAGES.indexOf(MapPage) / 2 + 1;
+// Pages ask the book to roll to the map spread.
+export const goToMap = () => window.dispatchEvent(new Event("goto:map"));

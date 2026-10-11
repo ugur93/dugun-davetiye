@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Book, { SPREADS } from "./components/Book.jsx";
+import { MAP_SPREAD } from "./components/Pages.jsx";
 import Background, { bgReady } from "./components/Background.jsx";
 import { Rsvp } from "./components/Extras.jsx";
 import { WEDDING } from "./content.js";
@@ -34,6 +35,10 @@ export default function Invitation() {
   const pendingSide = useRef(null);
   const focusRef = useRef(null);
   const [rotateHint, setRotateHint] = useState(false);
+  // "Yer" on the invitation rolls the book to the map; remember where to return.
+  const [returnTo, setReturnTo] = useState(null);
+  const roll = useRef(null); // { target, dir } while pages are rolling
+  const [rolling, setRolling] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [hasMusic, setHasMusic] = useState(false);
   const audio = useRef(null);
@@ -139,6 +144,42 @@ export default function Invitation() {
     startMusic(); // called inside the tap itself, which iOS Safari requires
     go(1);
   };
+  // Turn the pages one by one (quickly) until `target` is open.
+  const rollTo = (target) => {
+    if (target === spread || roll.current) return;
+    setZoomed(false);
+    roll.current = { target, dir: target > spread ? 1 : -1 };
+    setRolling(true);
+    go(spread + roll.current.dir);
+  };
+  const onFlipped = (s) => {
+    if (s !== spread) go(s);
+    const r = roll.current;
+    if (!r) return;
+    if (s === r.target) {
+      roll.current = null;
+      setRolling(false);
+    } else setTimeout(() => go(s + r.dir), 80);
+  };
+  const goToMap = () => {
+    if (spread === MAP_SPREAD) return;
+    setReturnTo(spread);
+    rollTo(MAP_SPREAD);
+  };
+  const goBack = () => {
+    const back = returnTo;
+    setReturnTo(null);
+    if (back) rollTo(back);
+  };
+  useEffect(() => {
+    addEventListener("goto:map", goToMap);
+    return () => removeEventListener("goto:map", goToMap);
+  });
+  // The "back" shortcut only makes sense while the map spread is open.
+  useEffect(() => {
+    if (!rolling && returnTo && spread !== MAP_SPREAD) setReturnTo(null);
+  }, [spread, rolling]);
+
   // While zoomed, step page by page; otherwise spread by spread.
   const next = () => {
     if (!spread) return open();
@@ -230,7 +271,8 @@ export default function Invitation() {
                 onZoom={zoomTo}
                 onUnzoom={() => setZoomed(false)}
                 onSwipe={(dir) => (dir > 0 ? next() : prev())}
-                onFlip={(s) => s !== spread && go(s)}
+                fast={rolling}
+                onFlip={onFlipped}
               />
             </div>
           </div>
@@ -272,6 +314,15 @@ export default function Invitation() {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
             <circle cx="10.5" cy="10.5" r="6" /><path d="M15 15l5 5M8 10.5h5" />
           </svg>
+        </button>
+      )}
+
+      {returnTo && spread === MAP_SPREAD && !rolling && (
+        <button className="go-back" onClick={goBack}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M10 6l-6 6 6 6M4 12h16" />
+          </svg>
+          Kaldığın yere dön
         </button>
       )}
 

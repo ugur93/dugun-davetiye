@@ -40,7 +40,7 @@ function Cover() {
  * or turned via the `spread` prop (0 = closed, 1..SPREADS = open spread).
  * A short tap opens the cover, or zooms the tapped page when open.
  */
-export default function Book({ spread, zoomed, onOpen, onZoom, onUnzoom, onSwipe, onFlip }) {
+export default function Book({ spread, zoomed, fast, onOpen, onZoom, onUnzoom, onSwipe, onFlip }) {
   const host = useRef(null);
   const root = useRef(null);
   const pf = useRef(null);
@@ -86,6 +86,12 @@ export default function Book({ spread, zoomed, onOpen, onZoom, onUnzoom, onSwipe
     book.on("flip", (e) => latest.current.onFlip(indexToSpread(e.data)));
     pf.current = book;
   }, []);
+
+  // Quicker page turns while rolling through several spreads.
+  useEffect(() => {
+    const settings = pf.current?.getSettings();
+    if (settings) settings.flippingTime = fast ? 450 : 1100;
+  }, [fast]);
 
   // Route changes (buttons, keys, back button) turn the pages.
   useEffect(() => {
