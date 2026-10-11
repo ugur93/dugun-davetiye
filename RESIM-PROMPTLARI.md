@@ -280,3 +280,36 @@ Kaydedin: **`public/resimler/harita.jpg`**
 Bunu ben hazırladım (masa videosundan bir kare ve deri kapak). Kendiniz daha güzelini yaparsanız
 **1200×630** boyutunda **`public/onizleme.jpg`** olarak kaydedin. Önemli olan her şeyin ortada olması:
 WhatsApp bazen görselin kenarlarını kırpar.
+
+---
+
+## Sade arka plan (eşyasız): `arka-plan.mp4` / `arka-plan-dikey.mp4`
+
+Mumlar, güller ve eşyalar fazla geldiyse: sadece sıcak ışıkta koyu ahşap bir masa, ilk haldeki gibi.
+Aynı iki adım: önce görsel (16:9 yatay ve 9:16 dikey), sonra o görselden video.
+
+**1. Görsel**
+```
+Top-down photograph of a plain, dark walnut wooden table surface at night, filling the
+whole frame. Nothing on the table: no objects, no candles, no flowers, no paper.
+A soft warm pool of golden candlelight falls on the centre of the table from out of
+frame, gently fading into deep brown shadows towards the edges (natural vignette).
+Subtle wood grain and a few fine scratches, very slight film grain. A few tiny,
+very soft out-of-focus warm bokeh lights at the top edge only. Calm, cozy, intimate,
+minimal. No text, no people.
+```
+
+**2. Video** (aynı görsel başlangıç karesi, 8 sn, kamera sabit, loop)
+```
+Seamless looping cinemagraph of this image. Camera completely still, no zoom, no pan.
+Only motion: the warm light on the table flickers very gently as if from a candle
+just out of frame, the few bokeh lights at the top twinkle slowly, and a handful of
+tiny golden dust motes drift slowly through the light. Very subtle and calm. The
+last frame must match the first. No new objects, no text.
+```
+
+Kaydedin: **`public/resimler/arka-plan.mp4`** (yatay) ve **`public/resimler/arka-plan-dikey.mp4`** (dikey).
+Eski videoları ben `resimler-orijinal/` klasörüne alırım; yenilerini de küçültüp ilk karelerini çıkarırım.
+
+> Video beklemeden hemen sadeleştirmek isterseniz: `src/content.js` içinde `backgroundVideo` satırını
+> `backgroundVideo: null,` yapın; kodla çizilen sade ahşap masa ve mum ışığı geri gelir.

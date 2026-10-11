@@ -49,7 +49,7 @@ export default function Invitation() {
   // Tapping a page zooms the book in on it (side 0 = left, 1 = right).
   const [zoomed, setZoomed] = useState(false);
   const [side, setSide] = useState(0);
-  const [zoomScale, setZoomScale] = useState(2);
+  const [zoomFit, setZoomFit] = useState({ s: 2, dy: 0 });
   const pendingSide = useRef(null);
   const focusRef = useRef(null);
   const [rotateHint, setRotateHint] = useState(false);
@@ -108,11 +108,18 @@ export default function Invitation() {
     return () => { clearTimeout(show); clearTimeout(hide); };
   }, [spread > 0]);
 
-  // How far to zoom so one page fills the screen.
+  // Zoom so one page fills the space between the top buttons and the
+  // arrows at the bottom, centred in that space.
+  const TOP = 64, BOTTOM = 84;
   const measureZoom = () => {
-    const w = focusRef.current?.offsetWidth;
+    const el = focusRef.current;
+    const w = el?.offsetWidth;
     if (!w) return;
-    setZoomScale(Math.min((innerWidth * 0.96) / (w / 2), (innerHeight * 0.84) / (w / 1.5)));
+    const h = w / 1.5;
+    const s = Math.min((innerWidth * 0.96) / (w / 2), (innerHeight - TOP - BOTTOM - 12) / h);
+    const r = el.parentElement.getBoundingClientRect(); // the stage is never zoomed
+    const centre = r.top + r.height / 2;
+    setZoomFit({ s, dy: (TOP + innerHeight - BOTTOM) / 2 - centre });
   };
   useEffect(() => {
     if (!zoomed) return;
@@ -279,7 +286,7 @@ export default function Invitation() {
           <div
             ref={focusRef}
             className="focus"
-            style={zoomed && spread ? { transform: `scale(${zoomScale}) translateX(${side ? -25 : 25}%)` } : undefined}
+            style={zoomed && spread ? { transform: `translateY(${zoomFit.dy}px) scale(${zoomFit.s}) translateX(${side ? -25 : 25}%)` } : undefined}
           >
             <div className={`tilt${spread ? " open" : ""}${zoomed && spread ? " zoomed" : ""}`}>
               {messages && <Book
@@ -304,7 +311,7 @@ export default function Invitation() {
         </button>
       )}
 
-      <nav className={`ui${spread ? " show" : ""}`}>
+      <nav className={`ui${spread ? " show" : ""}${zoomed && spread ? " zoomed" : ""}`}>
         <button className="arrow" onClick={prev} aria-label="Önceki sayfa">‹</button>
         <div className="mid">
           <div className="dots">
