@@ -21,8 +21,9 @@ export const WEDDING = {
   // Boyanmış süs şeritleri (yoksa kodla çizilenler kullanılır)
   ornaments: { top: "resimler/serit-ust.png", bottom: "resimler/serit-alt.png" },
   paper: "resimler/sayfa.jpg", // yatay parşömen: sol yarısı sol sayfaya, sağ yarısı sağ sayfaya (yoksa kodla çizilen kâğıt)
-  // Hareketli arka plan videoları (public/ içinde). Yoksa çizilmiş mum ışıklı masa görünür.
-  backgroundVideo: { wide: "resimler/arka-plan.mp4", tall: "resimler/arka-plan-dikey.mp4" },
+  // Arka plan: null = kodla çizilmiş mum ışıklı masa. Hareketli video için:
+  // backgroundVideo: { wide: "resimler/arka-plan.mp4", tall: "resimler/arka-plan-dikey.mp4" },
+  backgroundVideo: null,
   event: "Düğün törenimizde", // davetiye sayfasındaki süslü başlık
   siteUrl: "https://ugur93.github.io/dugun-davetiye/", // QR kod bu adrese gider
   // Aile isimlerini yazarsanız davetiyede çiftin isimleri yerine bunlar çıkar, ör.
