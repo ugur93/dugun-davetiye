@@ -171,17 +171,15 @@ main {
 .band-top .sh.big { height: 100%; }
 
 /* bottom: green band, edge to edge */
+/* bottom ornament: a light strip between thin red and gold rules, like the top one */
 .band-bottom {
-  flex: none; height: 15cqw; margin-top: auto;
-  display: flex; justify-content: space-around; align-items: center; padding: 0 2cqw;
-  background:
-    linear-gradient(rgba(255,255,255,.06), rgba(0,0,0,.12)),
-    #1f7a45;
-  border-top: .6cqw solid #e3c27a; box-shadow: 0 -.4cqw 0 #2c1d10;
+  flex: none; height: 10cqw; margin: auto 5cqw 3.5cqw;
+  display: flex; justify-content: space-between; align-items: center; padding: 0 1cqw;
+  border-top: .35cqw solid #a8261f; border-bottom: .35cqw solid #a8261f;
+  box-shadow: 0 -.9cqw 0 -.5cqw #c9a13b, 0 .9cqw 0 -.5cqw #c9a13b;
 }
-.page.left .band-bottom { margin-left: 0; }
-.band-bottom svg { height: 66%; width: auto; }
-.band-bottom .sh { height: 82%; }
+.band-bottom svg { height: 62%; width: auto; }
+.band-bottom .sh { height: 80%; }
 
 /* illuminated capital */
 .dropcap {
@@ -211,7 +209,7 @@ main {
 .story .dropcap b { font-size: 11cqw; }
 .scene {
   flex: 1; min-height: 0; display: flex; align-items: flex-end; justify-content: center;
-  padding: 2cqw 2cqw 0;
+  padding: 2cqw 3cqw 2.5cqw;
 }
 .scene svg, .scene img, .scene video { width: 100%; height: 100%; }
 .scene img, .scene video {
