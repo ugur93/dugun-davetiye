@@ -533,5 +533,8 @@ main {
 .scene.alive:has(video) .fly { display: none; }
 
 /* real parchment photo (public/resimler/sayfa.jpg) replaces the drawn paper */
-.real-paper .page { background: var(--paper) center / cover no-repeat; box-shadow: none; }
+/* one landscape sheet spread across both pages, its fold on the spine */
+.real-paper .page { background: var(--paper) no-repeat; background-size: 200% 100%; box-shadow: none; }
+.real-paper .page.left { background-position: left center; }
+.real-paper .page.right { background-position: right center; }
 .real-paper .page::before { opacity: .35; }
