@@ -1,14 +1,10 @@
 import { useEffect, useRef } from "react";
 import { PageFlip } from "page-flip";
-import { PAGES } from "./Pages.jsx";
 import { WEDDING } from "../content.js";
 import { coverCreak, pageFlip, unlockSfx } from "../sound.js";
 
-export const SPREADS = PAGES.length / 2;
-
-// page-flip indices: 0 = cover, then PAGES[i] is page i + 1, so spread n
+// page-flip indices: 0 = cover, then pages[i] is page i + 1, so spread n
 // shows pages 2n-1 (left) and 2n (right); the last index is the back cover.
-const indexToSpread = (i) => (i === 0 ? 0 : Math.min(Math.ceil(i / 2), SPREADS));
 const spreadToIndex = (s) => (s ? 2 * s - 1 : 0);
 
 function Cover() {
@@ -40,7 +36,9 @@ function Cover() {
  * or turned via the `spread` prop (0 = closed, 1..SPREADS = open spread).
  * A short tap opens the cover, or zooms the tapped page when open.
  */
-export default function Book({ spread, zoomed, fast, onOpen, onZoom, onUnzoom, onSwipe, onFlip }) {
+export default function Book({ pages, spread, zoomed, fast, onOpen, onZoom, onUnzoom, onSwipe, onFlip }) {
+  const spreads = pages.length / 2;
+  const indexToSpread = (i) => (i === 0 ? 0 : Math.min(Math.ceil(i / 2), spreads));
   const host = useRef(null);
   const root = useRef(null);
   const pf = useRef(null);
@@ -130,7 +128,7 @@ export default function Book({ spread, zoomed, fast, onOpen, onZoom, onUnzoom, o
       <div className="shadow" />
       <div className="flip-host" ref={host} onPointerDown={onPointerDown} onPointerUp={onPointerUp}>
         <div className="pf-page" data-density="hard"><Cover /></div>
-        {PAGES.map((Content, i) => (
+        {pages.map((Content, i) => (
           <div className="pf-page" key={i}>
             <div className={`page ${i % 2 ? "right" : "left"}`}><Content /></div>
           </div>

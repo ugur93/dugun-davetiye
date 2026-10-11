@@ -33,6 +33,9 @@ export const WEDDING = {
   // Geri sayım ve "Takvime ekle" için (saat değişirse burayı da güncelleyin)
   dateISO: "2027-07-04T19:00:00+03:00",
   durationHours: 6,
+  // Google Sheets API adresi (apps-script/KURULUM.md). Doluysa katılım ve
+  // Dilek Defteri buradan çalışır; kişiye özel linkler: …/dugun-davetiye/?d=KOD
+  api: "",
   // Katılım bildirimi bu WhatsApp numarasına gelir, ör. "905551112233" (boşsa buton gizlenir)
   whatsapp: "",
   // Kişiye özel link: …/dugun-davetiye/?misafir=Ayşe%20Teyze → "Sevgili Ayşe Teyze"

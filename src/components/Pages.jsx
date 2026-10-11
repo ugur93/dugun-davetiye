@@ -3,7 +3,8 @@ import qrcode from "qrcode-generator";
 import { INK } from "./Characters.jsx";
 import { SCENES } from "./Scenes.jsx";
 import { MEMORIES, STORY, WEDDING } from "../content.js";
-import { Countdown, downloadIcs, googleCalendarUrl, openRsvp } from "./Extras.jsx";
+import { Countdown, downloadIcs, googleCalendarUrl, openRsvp, rsvpAvailable } from "./Extras.jsx";
+import { greetingName, isSen, useGuest } from "../guest.js";
 
 const GOLD = "#e3c27a";
 const RED = "#b8352c";
@@ -206,6 +207,8 @@ const stop = (e) => e.stopPropagation();
 
 function InvitePage() {
   const W = WEDDING;
+  const g = useGuest();
+  const name = greetingName(g);
   const [first, ...rest] = W.event;
   return (
     <>
@@ -213,9 +216,9 @@ function InvitePage() {
       <Swallow className="bird b1" flip />
       <Swallow className="bird b2" flip />
       <div className="invite-head">
-        {W.guest && <div className="greeting">Sevgili {W.guest},</div>}
+        {name && <div className="greeting">Sevgili {name},</div>}
         <div className="line1"><Dropcap letter={first} color={GREEN} /><span className="red">{rest.join("")}</span></div>
-        <div className="blue">sizleri de yanımızda görmekten</div>
+        <div className="blue">{isSen(g) ? "seni de yanımızda görmekten" : "sizleri de yanımızda görmekten"}</div>
         <div className="red">mutluluk duyarız.</div>
         <div className="divider">
           <GoldFlower size={14} /><Lozenge /><GoldFlower size={14} /><Lozenge /><GoldFlower size={14} />
@@ -325,16 +328,25 @@ function MemoriesPage() {
 
 function CelebratePage() {
   const W = WEDDING;
+  const g = useGuest();
+  const name = greetingName(g);
+  const answered = g.info?.yanit;
   return (
     <>
       <BandTop />
       <div className="celebrate">
-        <h3 className="chapter">{W.guest ? `Sevgili ${W.guest},` : "Bizimle kutlar mısınız?"}</h3>
+        <h3 className="chapter">{name ? `Sevgili ${name},` : "Bizimle kutlar mısınız?"}</h3>
         <p className="cel-sub">Birlikte yazacağımız nice güzel günün ilkine</p>
         <Countdown />
         <p className="cel-sub">kaldı</p>
         <div className="actions" onClick={stop}>
-          {W.whatsapp && <button className="act primary" onClick={openRsvp}>Katılımını bildir</button>}
+          {rsvpAvailable(g) && (
+            <button className="act primary" onClick={openRsvp}>
+              {isSen(g)
+                ? answered ? "Yanıtın alındı ✓ · değiştir" : "Katılımını bildir"
+                : answered ? "Yanıtınız alındı ✓ · değiştir" : "Katılımınızı bildirin"}
+            </button>
+          )}
           <button className="act" onClick={downloadIcs}>Takvime ekle</button>
           <a className="act" href={googleCalendarUrl()} target="_blank" rel="noopener noreferrer">Google Takvim</a>
           <a className="act" href={W.mapsUrl} target="_blank" rel="noopener noreferrer">Yol tarifi al</a>
@@ -346,20 +358,84 @@ function CelebratePage() {
   );
 }
 
-// Book content in reading order: [left, right] for each spread.
-export const PAGES = [
-  ...STORY.map((chapter) => {
-    const P = () => (chapter.finale ? <FinalePage chapter={chapter} /> : <StoryPage chapter={chapter} />);
-    return P;
-  }),
-  InvitePage,
-  MemoriesPage,
-  CelebratePage,
-  MapPage, // the map + directions spread is always the last one
-  TravelPage,
-];
+/* ---------- Dilek Defteri: approved guest messages ---------- */
+// Messages are packed onto pages by length (about 16 lines per page).
+function packMessages(messages) {
+  const pages = [];
+  let page = [], used = 0;
+  for (const m of messages) {
+    const lines = Math.ceil(m.mesaj.length / 40) + 2;
+    if (page.length && used + lines > 16) {
+      pages.push(page);
+      page = [];
+      used = 0;
+    }
+    page.push(m);
+    used += lines;
+  }
+  if (page.length) pages.push(page);
+  return pages;
+}
 
-// Spread that shows the map (left) and the directions (right).
-export const MAP_SPREAD = PAGES.indexOf(MapPage) / 2 + 1;
+function GuestbookPage({ messages, first }) {
+  return (
+    <>
+      <BandTop />
+      <h3 className="chapter gb-title">Dilek Defteri</h3>
+      {first && <p className="gb-sub">Sevdiklerimizin masalımıza bıraktığı notlar</p>}
+      <div className="notes">
+        {messages.map((m, i) => (
+          <figure key={i} className={`note n${i % 3}`}>
+            <blockquote>{m.mesaj}</blockquote>
+            <figcaption>— {m.isim}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <BandBottom />
+    </>
+  );
+}
+
+function WriteToUsPage() {
+  const g = useGuest();
+  const sen = isSen(g);
+  return (
+    <>
+      <BandTop />
+      <div className="celebrate">
+        <h3 className="chapter">{sen ? "Sen de yaz!" : "Siz de yazın!"}</h3>
+        <p className="cel-sub">
+          {sen ? "Katılımını bildirirken bize bir not bırakabilirsin." : "Katılımınızı bildirirken bize bir not bırakabilirsiniz."}
+          {" "}En güzelleri bu deftere eklenecek.
+        </p>
+        {rsvpAvailable(g) && (
+          <div className="actions" onClick={stop}>
+            <button className="act primary" onClick={openRsvp}>Not bırak</button>
+          </div>
+        )}
+        <div className="ever">…ve sonsuza kadar mutlu yaşadılar.</div>
+      </div>
+      <BandBottom />
+    </>
+  );
+}
+
+// Book content in reading order: [left, right] for each spread. Guestbook
+// pages (if any messages are approved) sit between the countdown and the map,
+// and the map + directions spread is always the last one.
+const storyPages = STORY.map((chapter) => {
+  const P = () => (chapter.finale ? <FinalePage chapter={chapter} /> : <StoryPage chapter={chapter} />);
+  return P;
+});
+
+export function buildPages(messages = []) {
+  const book = packMessages(messages).map((list, i) => {
+    const P = () => <GuestbookPage messages={list} first={i === 0} />;
+    return P;
+  });
+  if (book.length % 2) book.push(WriteToUsPage);
+  return [...storyPages, InvitePage, MemoriesPage, CelebratePage, ...book, MapPage, TravelPage];
+}
+
 // Pages ask the book to roll to the map spread.
 export const goToMap = () => window.dispatchEvent(new Event("goto:map"));

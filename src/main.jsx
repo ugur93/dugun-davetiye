@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import Invitation from "./Invitation.jsx";
+import Admin from "./Admin.jsx";
 import { WEDDING } from "./content.js";
 import "page-flip/src/Style/stPageFlip.css";
 import "./styles.css";
@@ -30,6 +31,8 @@ createRoot(document.getElementById("root")).render(
           <Route index element={null} />
           <Route path="sayfa/:no" element={null} />
         </Route>
+        {/* hidden page for the couple: invites, links, answers */}
+        <Route path="davetliler" element={<Admin />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

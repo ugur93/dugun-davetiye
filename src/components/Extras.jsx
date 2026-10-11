@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { WEDDING } from "../content.js";
+import { apiEnabled, apiPost } from "../api.js";
+import { refreshGuest, useGuest } from "../guest.js";
 
 /* ---------- confetti ---------- */
 const COLORS = ["#e3c27a", "#b8352c", "#24459a", "#1f7a45", "#fbf3dc", "#f0a3b5"];
@@ -77,22 +79,157 @@ export function downloadIcs() {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
-/* ---------- RSVP via WhatsApp ---------- */
+/* ---------- RSVP ---------- */
+// With a personal link (?d=code) and the Apps Script API, answers go to the
+// Google Sheet; otherwise the old WhatsApp message form is used (if a number is set).
 export const openRsvp = () => window.dispatchEvent(new Event("rsvp:open"));
+export const rsvpAvailable = (g) => (apiEnabled && !!g.info) || !!WEDDING.whatsapp;
 
 export function Rsvp() {
+  const g = useGuest();
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState(WEDDING.guest);
-  const [coming, setComing] = useState(true);
-  const [count, setCount] = useState(1);
-  const [note, setNote] = useState("");
-
   useEffect(() => {
     const on = () => setOpen(true);
     window.addEventListener("rsvp:open", on);
     return () => window.removeEventListener("rsvp:open", on);
   }, []);
   if (!open) return null;
+  const close = () => setOpen(false);
+  return (
+    <div className="modal" onClick={close}>
+      {apiEnabled && g.info ? <SheetRsvp guest={g.info} close={close} /> : <WhatsAppRsvp close={close} />}
+    </div>
+  );
+}
+
+function SheetRsvp({ guest, close }) {
+  const sen = guest.hitap === "sen";
+  const family = guest.tur === "aile";
+  const prev = guest.yanit;
+  const prevNames = prev?.gelenler ? prev.gelenler.split(",").map((x) => x.trim()) : [];
+
+  const [coming, setComing] = useState(prev ? prev.katilim === "Evet" : true);
+  const [count, setCount] = useState(Math.min(Math.max(prev?.kisi || (family ? guest.max : 1), 1), guest.max));
+  const [names, setNames] = useState(prevNames);
+  const [plusOne, setPlusOne] = useState(!family && (prev?.kisi || 0) > 1);
+  const [plusName, setPlusName] = useState(!family ? prevNames[0] || "" : "");
+  const [note, setNote] = useState(prev?.mesaj || "");
+  const [allow, setAllow] = useState(prev ? prev.izin : true);
+  const [status, setStatus] = useState("form"); // form | sending | done | error
+
+  const t = (senText, sizText) => (sen ? senText : sizText);
+
+  const send = async (e) => {
+    e.preventDefault();
+    setStatus("sending");
+    const kisi = !coming ? 0 : family ? count : plusOne ? 2 : 1;
+    const gelenler = !coming ? "" : family ? names.slice(0, count).map((n) => n.trim()).filter(Boolean).join(", ") : plusOne ? plusName.trim() : "";
+    try {
+      const r = await apiPost({ action: "rsvp", code: guest.kod, katilim: coming ? "Evet" : "Hayır", kisi, gelenler, mesaj: note.trim(), izin: allow });
+      if (r.error) throw new Error(r.error);
+      setStatus("done");
+      refreshGuest();
+      if (coming) confetti();
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  if (status === "done") {
+    return (
+      <div className="rsvp" onClick={(e) => e.stopPropagation()}>
+        <h3>Teşekkürler!</h3>
+        <p className="rsvp-sub">
+          {coming ? t("Seni aramızda görmek için sabırsızlanıyoruz.", "Sizi aramızda görmek için sabırsızlanıyoruz.") : t("Seni özleyeceğiz, aklımız sende olacak.", "Sizi özleyeceğiz, aklımız sizde olacak.")}
+        </p>
+        <p className="rsvp-note">{t("Yanıtını bu linkle istediğin zaman değiştirebilirsin.", "Yanıtınızı bu linkle istediğiniz zaman değiştirebilirsiniz.")}</p>
+        <button className="send" type="button" onClick={close}>Davetiyeye dön</button>
+      </div>
+    );
+  }
+
+  return (
+    <form className="rsvp" onClick={(e) => e.stopPropagation()} onSubmit={send}>
+      <h3>Katılım bildirimi</h3>
+      <p className="rsvp-sub">Sevgili {guest.isim}{prev ? t(", yanıtını güncelleyebilirsin", ", yanıtınızı güncelleyebilirsiniz") : ""}</p>
+
+      <div className="choice">
+        <button type="button" className={coming ? "on" : ""} onClick={() => setComing(true)}>
+          {family ? "Katılıyoruz" : "Katılıyorum"}
+        </button>
+        <button type="button" className={!coming ? "on" : ""} onClick={() => setComing(false)}>
+          {family ? "Katılamıyoruz" : "Katılamıyorum"}
+        </button>
+      </div>
+
+      {coming && family && (
+        <>
+          <label>
+            Kaç kişi geliyorsunuz?
+            <div className="stepper">
+              <button type="button" onClick={() => setCount(Math.max(1, count - 1))}>−</button>
+              <b>{count}</b>
+              <button type="button" onClick={() => setCount(Math.min(guest.max, count + 1))}>+</button>
+              <span className="max">en fazla {guest.max}</span>
+            </div>
+          </label>
+          <label>
+            Gelenlerin isimleri <i>(isteğe bağlı)</i>
+            <div className="names">
+              {Array.from({ length: count }, (_, i) => (
+                <input
+                  key={i}
+                  value={names[i] || ""}
+                  maxLength={40}
+                  placeholder={`${i + 1}. kişi`}
+                  onChange={(e) => setNames(Object.assign([...names], { [i]: e.target.value }))}
+                />
+              ))}
+            </div>
+          </label>
+        </>
+      )}
+
+      {coming && !family && guest.max > 1 && (
+        <>
+          <label className="check">
+            <input type="checkbox" checked={plusOne} onChange={(e) => setPlusOne(e.target.checked)} />
+            +1 ile geleceğim
+          </label>
+          {plusOne && (
+            <label>
+              +1'in adı <i>(isteğe bağlı)</i>
+              <input value={plusName} maxLength={40} onChange={(e) => setPlusName(e.target.value)} placeholder="Ad Soyad" />
+            </label>
+          )}
+        </>
+      )}
+
+      <label>
+        {t("Bize bir not bırak", "Bize bir not bırakın")} <i>(isteğe bağlı)</i>
+        <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} maxLength={500} placeholder="Dilekleriniz, anılarınız…" />
+      </label>
+      {note.trim() && (
+        <label className="check small">
+          <input type="checkbox" checked={allow} onChange={(e) => setAllow(e.target.checked)} />
+          Mesajım, Fatma ile Uğur'un onayıyla davetiyedeki Dilek Defteri'nde gösterilebilir
+        </label>
+      )}
+
+      <button className="send" type="submit" disabled={status === "sending"}>
+        {status === "sending" ? "Gönderiliyor…" : prev ? "Yanıtı güncelle" : "Gönder"}
+      </button>
+      {status === "error" && <p className="rsvp-error">Gönderilemedi, lütfen biraz sonra tekrar deneyin.</p>}
+      <button className="close" type="button" onClick={close} aria-label="Kapat">×</button>
+    </form>
+  );
+}
+
+function WhatsAppRsvp({ close }) {
+  const [name, setName] = useState(WEDDING.guest);
+  const [coming, setComing] = useState(true);
+  const [count, setCount] = useState(1);
+  const [note, setNote] = useState("");
 
   const send = (e) => {
     e.preventDefault();
@@ -104,38 +241,36 @@ export function Rsvp() {
     ].filter(Boolean);
     window.open(`https://wa.me/${WEDDING.whatsapp}?text=${encodeURIComponent(lines.join("\n"))}`, "_blank", "noopener");
     if (coming) confetti();
-    setOpen(false);
+    close();
   };
 
   return (
-    <div className="modal" onClick={() => setOpen(false)}>
-      <form className="rsvp" onClick={(e) => e.stopPropagation()} onSubmit={send}>
-        <h3>Katılım bildirimi</h3>
+    <form className="rsvp" onClick={(e) => e.stopPropagation()} onSubmit={send}>
+      <h3>Katılım bildirimi</h3>
+      <label>
+        Adınız
+        <input value={name} onChange={(e) => setName(e.target.value)} required maxLength={60} placeholder="Ad Soyad" />
+      </label>
+      <div className="choice">
+        <button type="button" className={coming ? "on" : ""} onClick={() => setComing(true)}>Katılıyorum</button>
+        <button type="button" className={!coming ? "on" : ""} onClick={() => setComing(false)}>Katılamıyorum</button>
+      </div>
+      {coming && (
         <label>
-          Adınız
-          <input value={name} onChange={(e) => setName(e.target.value)} required maxLength={60} placeholder="Ad Soyad" />
+          Kaç kişi?
+          <div className="stepper">
+            <button type="button" onClick={() => setCount(Math.max(1, count - 1))}>−</button>
+            <b>{count}</b>
+            <button type="button" onClick={() => setCount(Math.min(10, count + 1))}>+</button>
+          </div>
         </label>
-        <div className="choice">
-          <button type="button" className={coming ? "on" : ""} onClick={() => setComing(true)}>Katılıyorum</button>
-          <button type="button" className={!coming ? "on" : ""} onClick={() => setComing(false)}>Katılamıyorum</button>
-        </div>
-        {coming && (
-          <label>
-            Kaç kişi?
-            <div className="stepper">
-              <button type="button" onClick={() => setCount(Math.max(1, count - 1))}>−</button>
-              <b>{count}</b>
-              <button type="button" onClick={() => setCount(Math.min(10, count + 1))}>+</button>
-            </div>
-          </label>
-        )}
-        <label>
-          Notunuz (isteğe bağlı)
-          <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={2} maxLength={300} />
-        </label>
-        <button className="send" type="submit">WhatsApp ile gönder</button>
-        <button className="close" type="button" onClick={() => setOpen(false)} aria-label="Kapat">×</button>
-      </form>
-    </div>
+      )}
+      <label>
+        Notunuz (isteğe bağlı)
+        <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={2} maxLength={300} />
+      </label>
+      <button className="send" type="submit">WhatsApp ile gönder</button>
+      <button className="close" type="button" onClick={close} aria-label="Kapat">×</button>
+    </form>
   );
 }

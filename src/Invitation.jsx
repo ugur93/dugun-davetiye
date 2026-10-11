@@ -1,13 +1,23 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import Book, { SPREADS } from "./components/Book.jsx";
-import { MAP_SPREAD } from "./components/Pages.jsx";
+import Book from "./components/Book.jsx";
+import { buildPages } from "./components/Pages.jsx";
+import { apiEnabled, apiGet } from "./api.js";
+import { greetingName, useGuest } from "./guest.js";
 import Background, { bgReady } from "./components/Background.jsx";
 import { Rsvp } from "./components/Extras.jsx";
 import { WEDDING } from "./content.js";
 import { setSfxMuted, unlockSfx } from "./sound.js";
 
-const spreadFromPath = (pathname) => {
+// Approved guestbook messages, fetched once while the names intro is showing.
+const messagesReady = apiEnabled
+  ? Promise.race([
+      apiGet("messages").then((m) => (Array.isArray(m) ? m : [])).catch(() => []),
+      new Promise((r) => setTimeout(() => r([]), 6000)),
+    ])
+  : Promise.resolve([]);
+
+const spreadFromPath = (pathname, SPREADS) => {
   const m = pathname.match(/^\/sayfa\/(\d+)/);
   return m ? Math.min(Math.max(+m[1], 1), SPREADS) : 0;
 };
@@ -24,7 +34,15 @@ function fadeIn(a, ms = 1500) {
 export default function Invitation() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const spread = spreadFromPath(pathname);
+  const guest = useGuest();
+  const [messages, setMessages] = useState(null); // null until loaded
+  useEffect(() => {
+    messagesReady.then(setMessages);
+  }, []);
+  const pages = useMemo(() => buildPages(messages || []), [messages]);
+  const SPREADS = pages.length / 2;
+  const MAP_SPREAD = SPREADS; // map + directions are always the last spread
+  const spread = spreadFromPath(pathname, SPREADS);
 
   // names → book. Deep links go straight to the book.
   const [phase, setPhase] = useState(spread > 0 ? "book" : "names");
@@ -57,7 +75,7 @@ export default function Invitation() {
       i.src = import.meta.env.BASE_URL + file;
     });
     const minimum = new Promise((r) => setTimeout(r, 3000));
-    Promise.all([minimum, bgReady, img(WEDDING.cover), img(WEDDING.paper)]).then(show);
+    Promise.all([minimum, bgReady, messagesReady, img(WEDDING.cover), img(WEDDING.paper)]).then(show);
     const cap = setTimeout(show, 7000);
     return () => {
       done = true;
@@ -225,7 +243,7 @@ export default function Invitation() {
         <div>
           <h2>{WEDDING.bride}<em>&amp;</em>{WEDDING.groom}</h2>
           <div className="line" />
-          {WEDDING.guest && <p className="intro-guest">Sevgili {WEDDING.guest}</p>}
+          {greetingName(guest) && <p className="intro-guest">Sevgili {greetingName(guest)}</p>}
         </div>
       </div>
 
@@ -264,7 +282,8 @@ export default function Invitation() {
             style={zoomed && spread ? { transform: `scale(${zoomScale}) translateX(${side ? -25 : 25}%)` } : undefined}
           >
             <div className={`tilt${spread ? " open" : ""}${zoomed && spread ? " zoomed" : ""}`}>
-              <Book
+              {messages && <Book
+                pages={pages}
                 spread={spread}
                 zoomed={zoomed && spread > 0}
                 onOpen={open}
@@ -273,7 +292,7 @@ export default function Invitation() {
                 onSwipe={(dir) => (dir > 0 ? next() : prev())}
                 fast={rolling}
                 onFlip={onFlipped}
-              />
+              />}
             </div>
           </div>
         </div>

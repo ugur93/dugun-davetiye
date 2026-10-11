@@ -588,3 +588,85 @@ main {
   animation: fadeUp .5s ease;
 }
 .go-back svg { width: 16px; height: 16px; }
+
+/* ---------- Dilek Defteri ---------- */
+.gb-title { margin-top: 2.5cqw; margin-bottom: .5cqw; }
+.gb-sub { text-align: center; font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 4.2cqw; color: #3a2a1a; }
+.notes { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: space-evenly; gap: 2.4cqw; padding: 2cqw 6cqw 3cqw; }
+.note {
+  margin: 0; padding: 2.6cqw 3.4cqw 2cqw; position: relative;
+  background: rgba(251, 243, 220, .55); border-left: .8cqw solid #a8261f;
+  box-shadow: .3cqw .5cqw 1.2cqw rgba(60, 35, 10, .18);
+}
+.note.n1 { border-left-color: #1f3f8f; rotate: .6deg; }
+.note.n2 { border-left-color: #1f7a45; rotate: -.5deg; }
+.note blockquote {
+  margin: 0; font-family: "Cormorant Garamond", serif; font-weight: 600; font-style: italic;
+  font-size: 4.5cqw; line-height: 1.25; color: #2a2238;
+  display: -webkit-box; -webkit-line-clamp: 9; -webkit-box-orient: vertical; overflow: hidden;
+}
+.note figcaption { margin-top: 1cqw; text-align: right; font-family: "Almendra", serif; font-size: 4.2cqw; color: #a8261f; }
+
+/* ---------- RSVP form extras ---------- */
+.rsvp { max-height: calc(100svh - 32px); overflow-y: auto; }
+.rsvp-sub { text-align: center; font-style: italic; font-size: 17px; margin-top: -6px; }
+.rsvp-note { text-align: center; font-size: 15px; opacity: .8; }
+.rsvp-error { color: #a8261f; text-align: center; font-weight: 700; }
+.rsvp label i { font-weight: 500; opacity: .7; }
+.rsvp .names { display: grid; gap: 6px; }
+.rsvp .check { display: flex; align-items: center; gap: 10px; grid-template-columns: none; font-weight: 600; }
+.rsvp .check input { width: 20px; height: 20px; accent-color: #1f7a45; flex: none; }
+.rsvp .check.small { font-size: 14px; font-weight: 500; }
+.stepper .max { font-size: 14px; font-weight: 500; opacity: .7; }
+.send:disabled { opacity: .6; }
+
+/* ---------- /davetliler (admin) ---------- */
+.admin {
+  position: fixed; inset: 0; overflow-y: auto; padding: 20px 14px 60px;
+  background: #1a120c; color: var(--ink); font-family: "Cormorant Garamond", serif;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+}
+.adm-card {
+  width: min(100%, 640px); padding: 20px; border-radius: 12px;
+  background: radial-gradient(ellipse at 50% 30%, #fbf3dc 50%, #ead7aa); box-shadow: 0 10px 30px rgba(0, 0, 0, .4);
+  display: grid; gap: 12px;
+}
+.adm-card h1 { font-family: "Almendra", serif; color: #a8261f; font-size: 28px; }
+.adm-card h2 { font-family: "Almendra", serif; color: #1f3f8f; font-size: 22px; }
+.adm-card p { font-size: 17px; }
+.adm-card input, .adm-card select {
+  font: 600 17px "Cormorant Garamond", serif; padding: 10px 12px; color: var(--ink);
+  background: #fffaf0; border: 1px solid #b89a63; border-radius: 8px;
+}
+.adm-head { display: flex; align-items: center; justify-content: space-between; }
+.adm-link { color: #a8261f; font-weight: 700; text-decoration: underline; }
+.adm-totals { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; }
+.adm-totals div { background: #fffaf0; border: 1px solid #d9c49a; border-radius: 10px; padding: 8px 4px; }
+.adm-totals b { display: block; font-size: 26px; color: #1f3f8f; font-family: "Almendra", serif; }
+.adm-totals small { font-size: 13px; font-weight: 700; }
+.adm-seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.adm-seg button { padding: 10px; border-radius: 8px; border: 1.5px solid #1f7a45; color: #1f7a45; font-weight: 700; font-size: 17px; background: #fffaf0; }
+.adm-seg button.on { background: #1f7a45; color: #fbf3dc; }
+.adm-row { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; }
+.adm-row input[type="number"] { width: 80px; }
+.adm-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: #1f7a45; }
+.adm-btn {
+  padding: 9px 14px; border-radius: 999px; border: 1.5px solid #1f3f8f; color: #1f3f8f; background: #fffaf0;
+  font-weight: 700; font-size: 15px; text-decoration: none; text-align: center; cursor: pointer;
+}
+.adm-btn.primary { background: #1f7a45; border-color: #1f7a45; color: #fbf3dc; padding: 12px; font-size: 17px; }
+.adm-btn.wa { border-color: #1f7a45; color: #1f7a45; }
+.adm-btn:disabled { opacity: .6; }
+.adm-err { color: #a8261f; font-weight: 700; }
+.adm-list { list-style: none; display: grid; gap: 10px; }
+.adm-list li { background: #fffaf0; border: 1px solid #d9c49a; border-radius: 10px; padding: 12px; display: grid; gap: 10px; }
+.adm-who { display: grid; gap: 2px; }
+.adm-who b { font-size: 19px; }
+.adm-who small { font-size: 14px; opacity: .8; }
+.adm-names { font-style: italic; }
+.st { font-weight: 700; font-size: 15px; }
+.st.yes { color: #1f7a45; } .st.no { color: #a8261f; } .st.wait { color: #8a6a2a; }
+.adm-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.adm-qrbox { display: grid; justify-items: center; gap: 8px; }
+.adm-qr { width: 200px; height: 200px; }
+.adm-qrbox code { font-size: 13px; word-break: break-all; text-align: center; }
