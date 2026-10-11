@@ -35,7 +35,7 @@ export const WEDDING = {
   durationHours: 6,
   // Google Sheets API adresi (apps-script/KURULUM.md). Doluysa katılım ve
   // Dilek Defteri buradan çalışır; kişiye özel linkler: …/dugun-davetiye/?d=KOD
-  api: "",
+  api: "https://script.google.com/macros/s/AKfycbyoG3ThMqAFObmc-z6zxEqtJCcLW8-Juugx_K_6NAutilrj_mf4Glkn7OKDlZyD9CIE/exec",
   // Katılım bildirimi bu WhatsApp numarasına gelir, ör. "905551112233" (boşsa buton gizlenir)
   whatsapp: "",
   // Kişiye özel link: …/dugun-davetiye/?misafir=Ayşe%20Teyze → "Sevgili Ayşe Teyze"
