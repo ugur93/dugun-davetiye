@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { PageFlip } from "page-flip";
 import { PAGES } from "./Pages.jsx";
 import { WEDDING } from "../content.js";
-import { coverCreak, pageFlip } from "../sound.js";
+import { coverCreak, pageFlip, unlockSfx } from "../sound.js";
 
 export const SPREADS = PAGES.length / 2;
 
@@ -86,7 +86,10 @@ export default function Book({ spread, onOpen, onZoom, onFlip }) {
 
   // A tap (not a drag) opens the book, or zooms the tapped page.
   const down = useRef(null);
-  const onPointerDown = (e) => (down.current = { x: e.clientX, y: e.clientY, t: Date.now() });
+  const onPointerDown = (e) => {
+    unlockSfx(); // a drag can open the book too
+    down.current = { x: e.clientX, y: e.clientY, t: Date.now() };
+  };
   const onPointerUp = (e) => {
     const d = down.current;
     down.current = null;

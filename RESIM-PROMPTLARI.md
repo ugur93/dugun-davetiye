@@ -212,3 +212,36 @@ readable on it.
 
 ### Telefon için dikey arka plan videosu
 Yatay `arka-plan.mp4` telefonda kenarlarından kırpılıyor, mumlar ve güller ekrandan çıkıyor. Aynı promptla **9:16 dikey** bir versiyon üretip `public/arka-plan-dikey.mp4` olarak koyarsanız telefonda o kullanılır.
+
+---
+
+## Ses efektleri: `sayfa-cevirme.mp3` ve `kapak-acilma.mp3`
+
+**Araç:** [ElevenLabs Sound Effects](https://elevenlabs.io/sound-effects) (yazıdan ses üretir, ücretsiz denemesi var) ya da Stable Audio.
+Her prompttan birkaç versiyon üretip en doğal olanı seçin.
+
+**1. Sayfa çevirme** (süre: ~1 saniye)
+
+```
+A single page of thick, old parchment paper being turned slowly in an antique book.
+Soft papery whoosh with a gentle crinkle at the end as the page settles. Close-up,
+intimate, quiet room, dry with only a tiny natural room tone. No music, no voices,
+no background noise.
+```
+
+**2. Kapak açılması** (süre: ~1,5 saniye)
+
+```
+An old heavy leather-bound book being opened: the stiff leather spine creaks softly,
+the thick cover swings open and lands with a dull, soft thud on a wooden table,
+followed by a faint rustle of the first pages. Close-up, quiet candle-lit room,
+warm and intimate. No music, no voices.
+```
+
+Ayarlar ve kaydetme:
+- ElevenLabs'te "Duration" değerini elle 1 sn ve 1,5 sn yapın, "Prompt influence" değerini yükseltin.
+- Başta ya da sonda sessizlik varsa kırpın; ses hemen başlamalı.
+- **`public/resimler/sayfa-cevirme.mp3`** ve **`public/resimler/kapak-acilma.mp3`** adlarıyla kaydedin.
+- Site sesi her çevirmede biraz farklı perdede çalar, böylece hep aynı ses gibi duyulmaz.
+
+Hazır ve ücretsiz ses isterseniz [Pixabay Sound Effects](https://pixabay.com/sound-effects/search/page%20turn/) sitesinde "page turn" ve "book open" aramalarında telifsiz sesler var.

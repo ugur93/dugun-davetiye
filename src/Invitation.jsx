@@ -4,7 +4,7 @@ import Book, { SPREADS, ZoomedPage } from "./components/Book.jsx";
 import Background from "./components/Background.jsx";
 import { Rsvp } from "./components/Extras.jsx";
 import { WEDDING } from "./content.js";
-import { setSfxMuted } from "./sound.js";
+import { setSfxMuted, unlockSfx } from "./sound.js";
 
 const spreadFromPath = (pathname) => {
   const m = pathname.match(/^\/sayfa\/(\d+)/);
@@ -56,6 +56,7 @@ export default function Invitation() {
     const off = () => events.forEach((ev) => document.removeEventListener(ev, onTap, true));
     function onTap(e) {
       if (e.target.closest?.(".music")) return off(); // the music button decides itself
+      unlockSfx();
       startMusic();
       off();
     }
@@ -79,6 +80,7 @@ export default function Invitation() {
     a.play().then(() => fadeIn(a)).catch(() => {});
   };
   const open = () => {
+    unlockSfx();
     startMusic(); // called inside the tap itself, which iOS Safari requires
     go(1);
   };
@@ -129,10 +131,11 @@ export default function Invitation() {
           setHasMusic(true);
           if (e.currentTarget.currentTime < WEDDING.musicStart) e.currentTarget.currentTime = WEDDING.musicStart;
         }}
-        onEnded={(e) => {
-          // loop from where the song becomes audible, not from its quiet intro
-          e.currentTarget.currentTime = WEDDING.musicStart;
-          e.currentTarget.play().catch(() => {});
+        loop
+        onTimeUpdate={(e) => {
+          // the native loop restarts at 0:00; skip the quiet intro again
+          const a = e.currentTarget;
+          if (!a.paused && a.currentTime < WEDDING.musicStart - 0.5) a.currentTime = WEDDING.musicStart;
         }}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}

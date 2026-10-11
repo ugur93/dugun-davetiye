@@ -14,6 +14,8 @@ export const WEDDING = {
     encodeURIComponent("Seyirtepe Düğün, 7368/5 Sk. No:15/D, Postacılar, Bayraklı, İzmir"),
   // public/ klasöründeki ilk bulunan dosya çalar: kendi şarkınızı muzik.mp3 olarak koyun
   music: ["muzik.mp3"],
+  // Ses efektleri (public/ içinde). Dosya yoksa sayfalar sessizce çevrilir.
+  sfx: { flip: "resimler/sayfa-cevirme.mp3", cover: "resimler/kapak-acilma.mp3" },
   musicStart: 8.5, // şarkının ilk 8,5 saniyesi çok sessiz: kitap açılınca buradan başlar
   cover: "resimler/kapak.jpg", // kapağın ortasındaki resim
   paper: "resimler/sayfa.jpg", // yatay parşömen: sol yarısı sol sayfaya, sağ yarısı sağ sayfaya (yoksa kodla çizilen kâğıt)
