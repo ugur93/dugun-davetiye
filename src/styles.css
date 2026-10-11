@@ -54,7 +54,6 @@ main {
   transition: opacity 1.4s ease, transform 1.6s cubic-bezier(.2, .8, .25, 1);
 }
 .stage.show { opacity: 1; transform: none; }
-.focus { transform-style: preserve-3d; transition: transform 1s var(--ease); }
 .tilt { transform-style: preserve-3d; transform: rotateX(24deg) rotateZ(-5deg); transition: transform 1.8s var(--ease); }
 .tilt.open { transform: rotateX(14deg) rotateZ(-3deg); }
 .book {
@@ -337,11 +336,7 @@ main {
   main { padding: 56px 8px calc(130px + env(safe-area-inset-bottom)); }
   .book { --w: min(98vw, calc((100svh - 220px) * 1.5)); --closed: 1.6; }
   .tilt { transform: rotateX(16deg) rotateZ(-3deg); }
-  .tilt.open { transform: rotateX(3deg); }
-  /* one page at a time: zoom in on the left or right page */
-  .focus.left { transform: scale(1.9) translateX(25%); }
-  .focus.right { transform: scale(1.9) translateX(-25%); }
-  .dots { gap: 6px; }
+  .tilt.open { transform: rotateX(8deg) rotateZ(-1.5deg); }
   .ui { flex-wrap: wrap; gap: 10px; }
   .mid { order: -1; flex-basis: 100%; }
   .hint { font-size: 13px; }
@@ -450,6 +445,23 @@ main {
 .spark.s2 { left: 30%; top: 30%; animation-delay: 1.3s; } .spark.s3 { left: 68%; top: 34%; animation-delay: 1.9s; }
 .spark.s4 { left: 50%; top: 2%; animation-delay: 2.3s; font-size: 2.6cqw; }
 @keyframes twinkle { 0%, 100% { opacity: 0; transform: scale(.4) rotate(0); } 50% { opacity: 1; transform: scale(1.1) rotate(45deg); } }
+
+/* ---------- "tap to zoom" badge on each visible page ---------- */
+.zoom-badge {
+  position: absolute; z-index: 6; right: 3cqw; bottom: 9.5cqw;
+  width: max(30px, 11cqw); height: max(30px, 11cqw); border-radius: 50%;
+  display: grid; place-items: center; pointer-events: none;
+  background: rgba(251, 243, 220, .92); border: max(1.5px, .5cqw) solid #a8261f;
+  box-shadow: 0 .6cqw 1.6cqw rgba(44, 29, 16, .45), inset 0 0 0 max(1px, .4cqw) #e3c27a;
+  opacity: 0; scale: .6; transition: opacity .5s ease 1.4s, scale .5s ease 1.4s;
+}
+.zoom-badge.on { opacity: 1; scale: 1; }
+.zoom-badge svg { width: 58%; height: 58%; }
+.zoom-badge::after {
+  content: ""; position: absolute; inset: -.4cqw; border-radius: 50%;
+  border: max(1.5px, .5cqw) solid #e3c27a; animation: ping 2.2s ease-out infinite;
+}
+@keyframes ping { 0% { opacity: .9; scale: 1; } 100% { opacity: 0; scale: 1.7; } }
 
 /* ---------- curved page turn shading ---------- */
 .turn-shade {

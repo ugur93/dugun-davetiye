@@ -34,17 +34,6 @@ export default function Invitation() {
   const userMuted = useRef(false);
   const touch = useRef(null);
 
-  // Portrait phones zoom in on one page at a time so the text is readable.
-  const [portrait, setPortrait] = useState(() => matchMedia("(max-aspect-ratio: 4/5)").matches);
-  useEffect(() => {
-    const mq = matchMedia("(max-aspect-ratio: 4/5)");
-    const on = () => setPortrait(mq.matches);
-    mq.addEventListener("change", on);
-    return () => mq.removeEventListener("change", on);
-  }, []);
-  const [side, setSide] = useState(0); // 0 = left page, 1 = right page
-  const pendingSide = useRef(null);
-
   useEffect(() => {
     if (phase !== "names") return;
     const t = setTimeout(() => setPhase("book"), 3000);
@@ -58,9 +47,6 @@ export default function Invitation() {
     prevSpread.current = spread;
     if (before === spread) return;
     before === 0 || spread === 0 ? coverCreak() : pageFlip();
-    // going back lands on the right-hand page, unless a page dot asked for a side
-    setSide(pendingSide.current ?? (spread > before ? 0 : 1));
-    pendingSide.current = null;
     if (before === 0) startMusic(); // the first page just opened
   }, [spread]);
 
@@ -98,16 +84,8 @@ export default function Invitation() {
     startMusic(); // called inside the tap itself, which iOS Safari requires
     go(1);
   };
-  const single = portrait && spread > 0;
-  const next = () => {
-    if (!spread) return open();
-    if (single && side === 0) return setSide(1);
-    go(spread + 1);
-  };
-  const prev = () => {
-    if (single && side === 1) return setSide(0);
-    go(spread - 1);
-  };
+  const next = () => (spread ? go(spread + 1) : open());
+  const prev = () => go(spread - 1);
 
   useEffect(() => {
     const onKey = (e) => {
@@ -140,9 +118,7 @@ export default function Invitation() {
     else if (dx > 45) prev();
   };
 
-  const last = spread === SPREADS && (!single || side === 1);
-  const pageDots = single ? SPREADS * 2 : SPREADS;
-  const current = single ? (spread - 1) * 2 + side : spread - 1;
+  const last = spread === SPREADS;
 
   return (
     <>
@@ -184,10 +160,8 @@ export default function Invitation() {
 
       <main onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <div className={`stage${phase === "book" ? " show" : ""}`}>
-          <div className={`focus${single ? (side ? " right" : " left") : ""}`}>
-            <div className={`tilt${spread ? " open" : ""}`}>
-              <Book spread={spread} onOpen={open} onZoom={setZoom} />
-            </div>
+          <div className={`tilt${spread ? " open" : ""}`}>
+            <Book spread={spread} onOpen={open} onZoom={setZoom} />
           </div>
         </div>
       </main>
@@ -202,25 +176,12 @@ export default function Invitation() {
         <button className="arrow" onClick={prev} aria-label="Önceki sayfa">‹</button>
         <div className="mid">
           <div className="dots">
-            {Array.from({ length: pageDots }, (_, i) => (
-              <button
-                key={i}
-                className={i === current ? "on" : ""}
-                aria-label={`${i + 1}. sayfa`}
-                onClick={() => {
-                  const target = single ? Math.floor(i / 2) + 1 : i + 1;
-                  if (!single) return go(target);
-                  if (target === spread) return setSide(i % 2);
-                  pendingSide.current = i % 2;
-                  go(target);
-                }}
-              />
+            {Array.from({ length: SPREADS }, (_, i) => (
+              <button key={i} className={i + 1 === spread ? "on" : ""} onClick={() => go(i + 1)} aria-label={`${i + 1}. sayfa`} />
             ))}
           </div>
           <p className="hint">
-            {single
-              ? "Sayfaları çevirmek için kaydır · büyütmek için dokun"
-              : last ? "Yakından görmek için bir sayfaya dokun" : "Okumak için sayfaya dokun · çevirmek için kaydır"}
+            {last ? "Büyütmek için sayfaya dokun" : "Büyütmek için sayfaya dokun · çevirmek için kaydır"}
           </p>
         </div>
         {last ? (

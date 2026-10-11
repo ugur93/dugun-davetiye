@@ -41,6 +41,11 @@ function PageFace({ index, side, back, visible, onZoom }) {
     >
       <Content />
       <i className="turn-shade" />
+      <span className={`zoom-badge${visible ? " on" : ""}`} aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1f3f8f" strokeWidth="2.4" strokeLinecap="round">
+          <circle cx="10.5" cy="10.5" r="6" /><path d="M15 15l5 5M10.5 8v5M8 10.5h5" />
+        </svg>
+      </span>
     </div>
   );
 }
