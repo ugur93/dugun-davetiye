@@ -311,29 +311,31 @@ export default function Invitation() {
         </button>
       )}
 
+      {/* simple footer: a hint and the directions button; side arrows only for mouse users */}
       <nav className={`ui${spread ? " show" : ""}${zoomed && spread ? " zoomed" : ""}`}>
-        <button className="arrow" onClick={prev} aria-label="Önceki sayfa">‹</button>
-        <div className="mid">
-          <div className="dots">
-            {Array.from({ length: SPREADS }, (_, i) => (
-              <button key={i} className={i + 1 === spread ? "on" : ""} onClick={() => go(i + 1)} aria-label={`${i + 1}. sayfa`} />
-            ))}
-          </div>
-          <p className="hint">
-            {zoomed
-              ? "Kaydırarak sayfaları gez · küçültmek için dokun"
-              : "Büyütmek için sayfaya dokun · çevirmek için kaydır"}
-          </p>
-        </div>
-        {last ? (
+        <p className="hint">
+          {zoomed
+            ? "Kaydırarak sayfaları gez · küçültmek için dokun"
+            : "Yakından görmek için bir sayfaya dokun"}
+        </p>
+        {spread === MAP_SPREAD ? (
           <a className="btn" href={WEDDING.mapsUrl} target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z" /></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 21s-6.5-6.2-6.5-11.5a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z" /><circle cx="12" cy="9.5" r="2.3" /></svg>
             Yol tarifi al
           </a>
         ) : (
-          <button className="arrow" onClick={next} aria-label="Sonraki sayfa">›</button>
+          <button className="btn" onClick={goToMap}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 21s-6.5-6.2-6.5-11.5a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z" /><circle cx="12" cy="9.5" r="2.3" /></svg>
+            Yol tarifi al
+          </button>
         )}
       </nav>
+      {spread > 0 && (
+        <>
+          <button className="arrow side prev" onClick={prev} aria-label="Önceki sayfa">‹</button>
+          {!last && <button className="arrow side next" onClick={next} aria-label="Sonraki sayfa">›</button>}
+        </>
+      )}
 
       {zoomed && spread > 0 && (
         <button className="unzoom" onClick={() => setZoomed(false)} aria-label="Kitabın tamamını göster">
