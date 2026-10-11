@@ -2,7 +2,8 @@
 // a warm pool of light under the book, out-of-focus candles and fairy-light
 // bokeh behind, blurred roses in the foreground, a few petals on the table
 // and dust motes drifting through the light.
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { WEDDING } from "../content.js";
 
 function Candle({ className }) {
   return (
@@ -63,7 +64,19 @@ const Petal = ({ style }) => (
 
 const rand = (a, b) => a + Math.random() * (b - a);
 
+// Prefer the portrait video on phones, falling back to the other one.
+function pickVideos() {
+  const v = WEDDING.backgroundVideo;
+  if (!v) return [];
+  const tall = matchMedia("(max-aspect-ratio: 4/5)").matches;
+  return (tall ? [v.tall, v.wide] : [v.wide, v.tall]).filter(Boolean);
+}
+
 export default function Background() {
+  const [videos] = useState(pickVideos);
+  const [videoIndex, setVideoIndex] = useState(0);
+  const [videoReady, setVideoReady] = useState(false);
+  const videoSrc = videos[videoIndex];
   const { bokeh, motes } = useMemo(
     () => ({
       bokeh: Array.from({ length: 16 }, (_, i) => ({
@@ -86,7 +99,17 @@ export default function Background() {
     []
   );
   return (
-    <div className="room" aria-hidden="true">
+    <div className={`room${videoReady ? " has-video" : ""}`} aria-hidden="true">
+      {videoSrc && (
+        <video
+          key={videoSrc}
+          className="bg-video"
+          src={import.meta.env.BASE_URL + videoSrc}
+          autoPlay muted loop playsInline preload="auto"
+          onCanPlay={() => setVideoReady(true)}
+          onError={() => setVideoIndex((i) => i + 1)}
+        />
+      )}
       <div className="bokeh">
         {bokeh.map((b) => (
           <span key={b.key} style={{ left: b.left, top: b.top, width: b.size, height: b.size, animationDelay: b.delay, animationDuration: b.dur }} />

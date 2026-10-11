@@ -132,3 +132,54 @@ loops perfectly. No text.
 - Kuşları sitedeki animasyon zaten uçuruyor; videoda kuş istemiyorsanız "the two birds stay still" ekleyin.
 - Çıkan videoyu **`5-kral-kralice.mp4`** adıyla `public/resimler/` klasörüne koyun. 2–4 MB'tan büyükse söyleyin, küçültürüm.
 - GIF de olur: adı `5-kral-kralice.gif` olsun ve `src/content.js` içindeki `video:` satırını `.gif` yapın.
+
+---
+
+## Hareketli arka plan: `arka-plan.mp4` (yatay) ve `arka-plan-dikey.mp4` (telefon)
+
+Kitap kodla çiziliyor ve videonun **ortasına** oturuyor. Bu yüzden videonun ortası **boş bir masa yüzeyi** olmalı, kitap ya da kâğıt olmamalı.
+
+**Araç:** Kling, Runway (Gen-4), Luma, Google Veo ya da Sora.
+Önce görsel üretip sonra "resimden video" yapmak daha tutarlı sonuç verir.
+
+**1. adım: görsel** (ChatGPT / Gemini / Midjourney). İki boyut üretin: 16:9 yatay ve 9:16 dikey.
+
+```
+Cinematic top-down photograph looking straight down at an old dark walnut wooden
+table at night, lit only by warm candlelight. The CENTER of the table is completely
+empty and clear (a large empty area where a book will be placed later), softly lit
+by a warm pool of golden light.
+
+Around the edges of the frame, slightly out of focus (shallow depth of field):
+- two or three lit ivory pillar candles in brass holders with dripping wax (top left, top right)
+- a small bouquet of dark red and blush roses with a few loose petals scattered on the wood
+- a vintage brass key, a feather quill in a glass inkwell, a red wax seal stick
+- a sprig of olive leaves and a little dried lavender
+- soft warm fairy-light bokeh in the dark background
+
+Mood: cozy, romantic, fairy-tale, intimate, warm amber and deep brown tones, rich
+shadows, film-like grain, photorealistic. No people, no text, no book, no paper in the
+center.
+```
+
+**2. adım: video** (aynı görseli başlangıç karesi olarak verin, 8–10 saniye, kamera sabit, loop):
+
+```
+Turn this image into a seamless looping cinemagraph. The camera is completely still,
+top-down, no zoom, no pan, no cuts. Keep the empty center of the table empty.
+
+Motion only:
+- the candle flames flicker gently and the warm light on the table breathes softly
+- a thin wisp of smoke curls up from one candle now and then
+- the fairy-light bokeh in the background twinkles slowly
+- tiny golden dust motes drift through the candlelight
+- one rose petal very slowly settles on the table
+
+Calm, cozy, romantic, slow. The last frame must match the first frame for a perfect
+loop. No text, no people.
+```
+
+Kaydetme:
+- Yatay video → **`public/arka-plan.mp4`** (bilgisayar ve tablet)
+- Dikey video → **`public/arka-plan-dikey.mp4`** (telefon)
+- Sadece biri olursa o her yerde kullanılır. Videolar 5 MB'tan büyükse söyleyin, küçültürüm.

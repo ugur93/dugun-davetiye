@@ -52,7 +52,7 @@ const stamp = (d) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")
 function eventTimes() {
   const start = new Date(WEDDING.dateISO);
   const end = new Date(start.getTime() + WEDDING.durationHours * 3600e3);
-  return { start, end, title: `${WEDDING.bride} & ${WEDDING.groom} Düğünü`, place: `${WEDDING.venue}, ${WEDDING.city}` };
+  return { start, end, title: `${WEDDING.bride} & ${WEDDING.groom} Düğünü`, place: `${WEDDING.venue}, ${WEDDING.address}` };
 }
 export function googleCalendarUrl() {
   const { start, end, title, place } = eventTimes();

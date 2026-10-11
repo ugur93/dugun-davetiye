@@ -7,14 +7,17 @@ export const WEDDING = {
   timeText: "Saat: 19.00", // TODO: saati netleştirin
   venue: "Seyirtepe · Saklıvadi Bahçe",
   city: "İzmir",
+  address: "Postacılar Mah. 7368/5 Sk. No: 15/D, Bayraklı / İzmir",
   venueUrl: "https://seyirtepedugun.com/saklivadi-bahce/",
   mapsUrl:
     "https://www.google.com/maps/search/?api=1&query=" +
-    encodeURIComponent("Seyirtepe Düğün Saklıvadi Bahçe İzmir"),
+    encodeURIComponent("Seyirtepe Düğün, 7368/5 Sk. No:15/D, Postacılar, Bayraklı, İzmir"),
   // public/ klasöründeki ilk bulunan dosya çalar: kendi şarkınızı muzik.mp3 olarak koyun
   music: ["muzik.mp3"],
   musicStart: 8.5, // şarkının ilk 8,5 saniyesi çok sessiz: kitap açılınca buradan başlar
   cover: "resimler/kapak.jpg", // kapağın ortasındaki resim
+  // Hareketli arka plan videoları (public/ içinde). Yoksa çizilmiş mum ışıklı masa görünür.
+  backgroundVideo: { wide: "arka-plan.mp4", tall: "arka-plan-dikey.mp4" },
   event: "Düğün törenimizde", // davetiye sayfasındaki süslü başlık
   siteUrl: "https://ugur93.github.io/dugun-davetiye/", // QR kod bu adrese gider
   // Aile isimlerini yazarsanız davetiyede çiftin isimleri yerine bunlar çıkar, ör.

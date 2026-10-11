@@ -248,8 +248,8 @@ function InvitePage() {
             <svg viewBox="0 0 20 22"><path d={FLEUR} fill={RED} stroke={RED} strokeWidth="1.2" strokeLinejoin="round" /></svg>
           </Tile>
           <div>
-            {W.city} ·{" "}
-            <a href={W.mapsUrl} target="_blank" rel="noopener noreferrer" onClick={stop}>Haritada aç</a>
+            Adres: {W.address}{" "}
+            <a className="maplink" href={W.mapsUrl} target="_blank" rel="noopener noreferrer" onClick={stop}>(haritada aç)</a>
           </div>
         </li>
       </ul>
@@ -284,7 +284,7 @@ function CelebratePage() {
       <BandTop />
       <div className="celebrate">
         <h3 className="chapter">{W.guest ? `Sevgili ${W.guest},` : "Bizimle kutlar mısınız?"}</h3>
-        <p className="cel-sub">Masalın en güzel gününe</p>
+        <p className="cel-sub">Birlikte yazacağımız nice güzel günün ilkine</p>
         <Countdown />
         <p className="cel-sub">kaldı</p>
         <div className="actions" onClick={stop}>
