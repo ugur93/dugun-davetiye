@@ -2,7 +2,7 @@
 // a warm pool of light under the book, out-of-focus candles and fairy-light
 // bokeh behind, blurred roses in the foreground, a few petals on the table
 // and dust motes drifting through the light.
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { WEDDING } from "../content.js";
 
 function Candle({ className }) {
@@ -64,6 +64,10 @@ const Petal = ({ style }) => (
 
 const rand = (a, b) => a + Math.random() * (b - a);
 
+// Resolves once the table video can play (or there is no video to wait for).
+let resolveBg;
+export const bgReady = new Promise((r) => (resolveBg = r));
+
 // Prefer the portrait video on phones, falling back to the other one.
 function pickVideos() {
   const v = WEDDING.backgroundVideo;
@@ -77,6 +81,9 @@ export default function Background() {
   const [videoIndex, setVideoIndex] = useState(0);
   const [videoReady, setVideoReady] = useState(false);
   const videoSrc = videos[videoIndex];
+  useEffect(() => {
+    if (!videoSrc) resolveBg();
+  }, [videoSrc]);
   const { bokeh, motes } = useMemo(
     () => ({
       bokeh: Array.from({ length: 16 }, (_, i) => ({
@@ -105,8 +112,12 @@ export default function Background() {
           key={videoSrc}
           className="bg-video"
           src={import.meta.env.BASE_URL + videoSrc}
+          poster={import.meta.env.BASE_URL + videoSrc.replace(/\.mp4$/, "-poster.jpg")}
           autoPlay muted loop playsInline preload="auto"
-          onCanPlay={() => setVideoReady(true)}
+          onCanPlay={() => {
+            setVideoReady(true);
+            resolveBg();
+          }}
           onError={() => setVideoIndex((i) => i + 1)}
         />
       )}

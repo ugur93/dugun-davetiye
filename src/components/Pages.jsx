@@ -147,7 +147,7 @@ function Illustration({ chapter }) {
       <video
         src={base + chapter.video}
         poster={chapter.image ? base + chapter.image : undefined}
-        autoPlay muted loop playsInline preload="metadata"
+        autoPlay muted loop playsInline preload="auto"
         onError={() => setVideoFailed(true)}
       />
     );
@@ -258,6 +258,49 @@ function InvitePage() {
   );
 }
 
+function MapPage() {
+  return (
+    <>
+      <BandTop />
+      <h3 className="chapter map-title">Masal diyarının haritası</h3>
+      <div className="scene map-scene"><Illustration chapter={{ scene: "map", image: WEDDING.map }} /></div>
+      <BandBottom />
+    </>
+  );
+}
+
+function TravelPage() {
+  const W = WEDDING;
+  const apple = `https://maps.apple.com/?q=${encodeURIComponent("Seyirtepe Düğün")}&address=${encodeURIComponent(W.address)}`;
+  return (
+    <>
+      <BandTop />
+      <div className="body">
+        <h3 className="chapter">Saklı Vadi'ye giden yol</h3>
+        <p className="story">
+          <Dropcap letter="S" />
+          eyirtepe, Bayraklı'da körfeze bakan bir tepenin üstünde. Yolu kaybetmeyin diye haritasını da çizdik.
+        </p>
+        <p className="story directions">{W.directions}</p>
+      </div>
+      <ul className="details travel">
+        <li>
+          <Tile frame={GREEN}>
+            <svg viewBox="0 0 24 24"><path d="M12 3a6.5 6.5 0 0 0-6.5 6.5c0 4.9 6.5 12 6.5 12s6.5-7.1 6.5-12A6.5 6.5 0 0 0 12 3z" fill={RED} stroke={INK} /><circle cx="12" cy="9.5" r="2.4" fill="#fbf3dc" /></svg>
+          </Tile>
+          <div>{W.venue}<small>{W.address}</small></div>
+        </li>
+      </ul>
+      <div className="actions travel-actions" onClick={stop}>
+        <a className="act" href={W.mapsUrl} target="_blank" rel="noopener noreferrer">Google Haritalar</a>
+        <a className="act" href={apple} target="_blank" rel="noopener noreferrer">Apple Haritalar</a>
+        <a className="act" href={W.venueUrl} target="_blank" rel="noopener noreferrer">Mekânın sitesi</a>
+      </div>
+      <BandBottom />
+    </>
+  );
+}
+
 function MemoriesPage() {
   return (
     <>
@@ -307,6 +350,8 @@ export const PAGES = [
     return P;
   }),
   InvitePage,
+  MapPage,
+  TravelPage,
   MemoriesPage,
   CelebratePage,
 ];

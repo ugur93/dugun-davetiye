@@ -26,6 +26,10 @@ export const WEDDING = {
   // Aile isimlerini yazarsanız davetiyede çiftin isimleri yerine bunlar çıkar, ör.
   // families: [{ parents: "Ayşe & Ali", surname: "YILMAZ" }, { parents: "Zehra & Mehmet", surname: "DEMİR" }],
   families: null,
+  // Harita sayfası: public/resimler/harita.jpg (yoksa kodla çizilmiş harita görünür)
+  map: "resimler/harita.jpg",
+  // TODO: yol tarifini mekândan teyit edin (bir rehber sitesinden alındı)
+  directions: "Örnekköy Tenis Kortları'nın karşısındaki ışıklardan ilk sağa dönüp yaklaşık 500 metre ilerleyin; Seyirtepe sağ tarafta, körfeze bakan tepede.",
   // Geri sayım ve "Takvime ekle" için (saat değişirse burayı da güncelleyin)
   dateISO: "2027-07-04T19:00:00+03:00",
   durationHours: 6,

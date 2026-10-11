@@ -40,11 +40,21 @@ function Cover() {
  * or turned via the `spread` prop (0 = closed, 1..SPREADS = open spread).
  * A short tap opens the cover, or zooms the tapped page when open.
  */
-export default function Book({ spread, onOpen, onZoom, onFlip }) {
+export default function Book({ spread, zoomed, onOpen, onZoom, onUnzoom, onSwipe, onFlip }) {
   const host = useRef(null);
+  const root = useRef(null);
   const pf = useRef(null);
-  const latest = useRef({ spread, onOpen, onZoom, onFlip });
-  latest.current = { spread, onOpen, onZoom, onFlip };
+  const latest = useRef({});
+  latest.current = { spread, zoomed, onOpen, onZoom, onUnzoom, onSwipe, onFlip };
+
+  // While zoomed in on a page, swipes move between pages instead of
+  // dragging page corners: keep page-flip from seeing the presses.
+  useEffect(() => {
+    const el = root.current;
+    const block = (e) => latest.current.zoomed && e.stopPropagation();
+    ["mousedown", "touchstart"].forEach((ev) => el.addEventListener(ev, block, true));
+    return () => ["mousedown", "touchstart"].forEach((ev) => el.removeEventListener(ev, block, true));
+  }, []);
 
   useEffect(() => {
     // page-flip moves the page nodes into its own wrapper, so it is created
@@ -84,7 +94,8 @@ export default function Book({ spread, onOpen, onZoom, onFlip }) {
     if (indexToSpread(book.getCurrentPageIndex()) !== spread) book.flip(spreadToIndex(spread), "top");
   }, [spread]);
 
-  // A tap (not a drag) opens the book, or zooms the tapped page.
+  // A tap opens the book or zooms in on the tapped page; when zoomed, a tap
+  // zooms back out and a horizontal swipe moves to the next/previous page.
   const down = useRef(null);
   const onPointerDown = (e) => {
     unlockSfx(); // a drag can open the book too
@@ -93,9 +104,14 @@ export default function Book({ spread, onOpen, onZoom, onFlip }) {
   const onPointerUp = (e) => {
     const d = down.current;
     down.current = null;
-    if (!d || Math.hypot(e.clientX - d.x, e.clientY - d.y) > 8 || Date.now() - d.t > 500) return;
+    if (!d) return;
+    const L = latest.current;
+    const dx = e.clientX - d.x, dy = e.clientY - d.y;
+    if (L.zoomed && Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) return L.onSwipe(dx < 0 ? 1 : -1);
+    if (Math.hypot(dx, dy) > 8 || Date.now() - d.t > 500) return;
     if (e.target.closest("a, button")) return;
-    const { spread: s, onOpen: open, onZoom: zoom } = latest.current;
+    if (L.zoomed) return L.onUnzoom();
+    const { spread: s, onOpen: open, onZoom: zoom } = L;
     if (!s) return open();
     if (pf.current?.getState() !== "read") return;
     const r = host.current.getBoundingClientRect();
@@ -104,7 +120,7 @@ export default function Book({ spread, onOpen, onZoom, onFlip }) {
   };
 
   return (
-    <div className={`book${spread ? " open" : ""}`}>
+    <div className={`book${spread ? " open" : ""}`} ref={root}>
       <div className="shadow" />
       <div className="flip-host" ref={host} onPointerDown={onPointerDown} onPointerUp={onPointerUp}>
         <div className="pf-page" data-density="hard"><Cover /></div>
@@ -120,15 +136,6 @@ export default function Book({ spread, onOpen, onZoom, onFlip }) {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-export function ZoomedPage({ index }) {
-  const Content = PAGES[index];
-  return (
-    <div className={`page ${index % 2 ? "right" : "left"}`}>
-      <Content />
     </div>
   );
 }

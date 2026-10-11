@@ -245,3 +245,38 @@ Ayarlar ve kaydetme:
 - Site sesi her çevirmede biraz farklı perdede çalar, böylece hep aynı ses gibi duyulmaz.
 
 Hazır ve ücretsiz ses isterseniz [Pixabay Sound Effects](https://pixabay.com/sound-effects/search/page%20turn/) sitesinde "page turn" ve "book open" aramalarında telifsiz sesler var.
+
+---
+
+## Harita sayfası: `harita.jpg`
+
+Kitapta "Masal diyarının haritası" sayfasında görünür. Görsel gelene kadar kodla çizilmiş basit bir harita duruyor.
+**Kare (1:1)** üretin. Yapay zekâ Türkçe yazıları bozduğu için **yazısız** isteyin.
+
+```
+A hand-painted medieval fairy-tale treasure map in the same illuminated-manuscript
+storybook style as the other illustrations (gouache and watercolor, fine dark ink
+outlines, lapis blue, vermilion red, leaf green and gold accents), on aged cream
+parchment with soft edges.
+
+Show a stylized bay of the sea (the Gulf of İzmir) curving from the left side into
+the middle, with little wave lines and a small sailing ship. Around the bay: tiny
+clusters of red-roofed houses on the shores, rolling green hills and small mountains.
+On a hilltop at the far east (right) end of the bay stands a small fairy-tale castle
+with red and blue turrets and a fluttering flag. A red dotted path winds from the
+houses by the shore up the hill to the castle. A decorative compass rose in one
+corner, a few blue swallows, a tiny playful sea serpent in the water, tulip and vine
+flourishes in the corners.
+
+No text, no letters, no labels, no border frame. Square format.
+```
+
+Kaydedin: **`public/resimler/harita.jpg`**
+
+---
+
+## Bağlantı önizlemesi (WhatsApp vb.): `onizleme.jpg`
+
+Bunu ben hazırladım (masa videosundan bir kare ve deri kapak). Kendiniz daha güzelini yaparsanız
+**1200×630** boyutunda **`public/onizleme.jpg`** olarak kaydedin. Önemli olan her şeyin ortada olması:
+WhatsApp bazen görselin kenarlarını kırpar.

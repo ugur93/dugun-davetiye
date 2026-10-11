@@ -173,4 +173,58 @@ function Royal() {
   );
 }
 
-export const SCENES = { swamp: Swamp, garden: Garden, meet: Meet, sea: Sea, royal: Royal };
+// Fallback treasure-map of the bay until resimler/harita.jpg is added.
+function MapScene() {
+  const T = ({ x, y, size = 7, children, fill = INK, italic }) => (
+    <text x={x} y={y} textAnchor="middle" fontFamily="Almendra" fontSize={size} fill={fill} fontStyle={italic ? "italic" : "normal"}>{children}</text>
+  );
+  const hill = (x, y, s = 1) => (
+    <path key={x + "-" + y} transform={`translate(${x} ${y}) scale(${s})`} d="M-8 0 L0 -9 L8 0 Z M-3 -5 L0 -9 L2 -6" fill="#c9b07a" stroke={INK} strokeWidth=".7" />
+  );
+  return (
+    <svg viewBox="0 0 200 150" preserveAspectRatio="xMidYMid meet">
+      {/* the bay */}
+      <path d="M0 62 C30 58 50 70 80 66 S130 74 150 82 C160 88 158 100 146 102 C120 106 90 96 60 104 S20 112 0 110 Z" fill="#a9c7d8" stroke={INK} strokeWidth="1" />
+      {[[20, 84], [52, 90], [88, 84], [118, 92]].map(([x, y]) => (
+        <path key={x} d={`M${x} ${y} q4 -3 8 0 q4 -3 8 0`} fill="none" stroke="#5f86a3" strokeWidth=".8" />
+      ))}
+      {/* ship */}
+      <g transform="translate(36 76)" stroke={INK} strokeWidth=".6">
+        <path d="M0 6 h14 l-3 4 h-8 z" fill="#8a5a32" /><path d="M7 6 V-6 l7 10 z" fill="#fbf7ee" /><path d="M7 -6 l-5 9 h5" fill="#f3ead8" />
+      </g>
+      {/* hills */}
+      {[[20, 40], [40, 34], [70, 42], [110, 30], [128, 40], [176, 52], [186, 70], [176, 124], [150, 130], [30, 130]].map(([x, y], i) => hill(x, y, i % 2 ? .9 : 1.1))}
+      {/* towns */}
+      <g fill="#b8352c" stroke={INK} strokeWidth=".6">
+        <rect x="56" y="46" width="6" height="6" /><rect x="64" y="48" width="5" height="4" />
+        <rect x="150" y="96" width="6" height="6" /><rect x="157" y="98" width="5" height="4" />
+        <rect x="40" y="118" width="6" height="6" />
+      </g>
+      <T x={62} y={42} size={6.5}>Karşıyaka</T>
+      <T x={162} y={112} size={6.5}>Bayraklı</T>
+      <T x={44} y={132} size={6.5}>Konak</T>
+      <T x={70} y={98} size={8} fill="#2b4c9b" italic>İzmir Körfezi</T>
+      {/* dotted road to the castle */}
+      <path d="M156 100 C168 92 160 80 166 70 S160 52 158 44" fill="none" stroke="#b8352c" strokeWidth="1.4" strokeDasharray="2.5 2.5" />
+      {/* castle on Seyirtepe */}
+      <g transform="translate(148 14)" stroke={INK} strokeWidth=".8">
+        <rect x="0" y="10" width="7" height="18" fill="#e9dcc0" /><rect x="8" y="14" width="10" height="14" fill="#f3ead8" /><rect x="19" y="8" width="6" height="20" fill="#e9dcc0" />
+        <path d="M-1 10l4.5-8 4.5 8z M18 8l4-8 4 8z" fill="#b8352c" /><path d="M7 14l6-6 6 6z" fill="#2b4c9b" />
+        <path d="M11 28v-6a2 2 0 0 1 4 0v6z" fill={INK} />
+      </g>
+      <path d="M161 6 v-5 l6 2 -6 2" fill="#b8352c" stroke={INK} strokeWidth=".5" />
+      <T x={161} y={50} size={7.5} fill="#b8352c">Seyirtepe</T>
+      <T x={161} y={57} size={5} italic>Saklıvadi Bahçe</T>
+      {/* compass rose */}
+      <g transform="translate(22 14)" stroke={INK} strokeWidth=".5">
+        <circle r="9" fill="none" />
+        <path d="M0 -11 L2.5 0 L0 11 L-2.5 0 Z" fill="#e3c27a" /><path d="M-11 0 L0 -2.5 L11 0 L0 2.5 Z" fill="#c9b07a" />
+        <path d="M0 -11 L2.5 0 L-2.5 0 Z" fill="#b8352c" />
+      </g>
+      <T x={22} y={30} size={5}>K</T>
+    </svg>
+  );
+}
+
+export const SCENES = {
+  map: MapScene, swamp: Swamp, garden: Garden, meet: Meet, sea: Sea, royal: Royal };

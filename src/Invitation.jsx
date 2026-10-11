@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import Book, { SPREADS, ZoomedPage } from "./components/Book.jsx";
-import Background from "./components/Background.jsx";
+import Book, { SPREADS } from "./components/Book.jsx";
+import Background, { bgReady } from "./components/Background.jsx";
 import { Rsvp } from "./components/Extras.jsx";
 import { WEDDING } from "./content.js";
 import { setSfxMuted, unlockSfx } from "./sound.js";
@@ -27,16 +27,37 @@ export default function Invitation() {
 
   // names → book. Deep links go straight to the book.
   const [phase, setPhase] = useState(spread > 0 ? "book" : "names");
-  const [zoom, setZoom] = useState(null);
+  // Tapping a page zooms the book in on it (side 0 = left, 1 = right).
+  const [zoomed, setZoomed] = useState(false);
+  const [side, setSide] = useState(0);
+  const [zoomScale, setZoomScale] = useState(2);
+  const pendingSide = useRef(null);
+  const focusRef = useRef(null);
+  const [rotateHint, setRotateHint] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [hasMusic, setHasMusic] = useState(false);
   const audio = useRef(null);
   const userMuted = useRef(false);
 
+  // The names stay on screen while the cover, paper and table video load
+  // (at least 3 s, at most 7 s), so the book appears without popping in.
   useEffect(() => {
     if (phase !== "names") return;
-    const t = setTimeout(() => setPhase("book"), 3000);
-    return () => clearTimeout(t);
+    let done = false;
+    const show = () => !done && (done = true, setPhase("book"));
+    const img = (file) => new Promise((r) => {
+      if (!file) return r();
+      const i = new Image();
+      i.onload = i.onerror = r;
+      i.src = import.meta.env.BASE_URL + file;
+    });
+    const minimum = new Promise((r) => setTimeout(r, 3000));
+    Promise.all([minimum, bgReady, img(WEDDING.cover), img(WEDDING.paper)]).then(show);
+    const cap = setTimeout(show, 7000);
+    return () => {
+      done = true;
+      clearTimeout(cap);
+    };
   }, [phase]);
 
   // Music starts as soon as the book opens, however it was opened.
@@ -46,7 +67,41 @@ export default function Invitation() {
     prevSpread.current = spread;
     if (before === spread) return;
     if (before === 0) startMusic(); // the first page just opened
+    if (!spread) setZoomed(false);
+    // while zoomed, turning forward shows the new left page, back the right page
+    setSide(pendingSide.current ?? (spread > before ? 0 : 1));
+    pendingSide.current = null;
   }, [spread]);
+
+  // First time the book opens on a portrait phone, suggest turning it sideways.
+  useEffect(() => {
+    if (!spread || !matchMedia("(max-aspect-ratio: 4/5) and (max-width: 600px)").matches) return;
+    try {
+      if (sessionStorage.getItem("rotateHint")) return;
+      sessionStorage.setItem("rotateHint", "1");
+    } catch {}
+    const show = setTimeout(() => setRotateHint(true), 1600);
+    const hide = setTimeout(() => setRotateHint(false), 7000);
+    return () => { clearTimeout(show); clearTimeout(hide); };
+  }, [spread > 0]);
+
+  // How far to zoom so one page fills the screen.
+  const measureZoom = () => {
+    const w = focusRef.current?.offsetWidth;
+    if (!w) return;
+    setZoomScale(Math.min((innerWidth * 0.96) / (w / 2), (innerHeight * 0.84) / (w / 1.5)));
+  };
+  useEffect(() => {
+    if (!zoomed) return;
+    addEventListener("resize", measureZoom);
+    return () => removeEventListener("resize", measureZoom);
+  }, [zoomed]);
+  const zoomTo = (pageIndex) => {
+    measureZoom();
+    setSide(pageIndex % 2);
+    setZoomed(true);
+    setRotateHint(false);
+  };
 
   // Opened straight on a page (e.g. a /sayfa/1 link)? Browsers only allow
   // sound after a tap, so start the music on the first interaction.
@@ -84,13 +139,22 @@ export default function Invitation() {
     startMusic(); // called inside the tap itself, which iOS Safari requires
     go(1);
   };
-  const next = () => (spread ? go(spread + 1) : open());
-  const prev = () => go(spread - 1);
+  // While zoomed, step page by page; otherwise spread by spread.
+  const next = () => {
+    if (!spread) return open();
+    if (zoomed && side === 0) return setSide(1);
+    if (zoomed) pendingSide.current = 0;
+    go(spread + 1);
+  };
+  const prev = () => {
+    if (zoomed && side === 1) return setSide(0);
+    if (zoomed) pendingSide.current = 1;
+    go(spread - 1);
+  };
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === "Escape") setZoom(null);
-      if (zoom !== null) return;
+      if (e.key === "Escape") setZoomed(false);
       if (e.key === "ArrowRight") next();
       if (e.key === "ArrowLeft") prev();
     };
@@ -110,7 +174,7 @@ export default function Invitation() {
   };
 
 
-  const last = spread === SPREADS;
+  const last = spread === SPREADS && (!zoomed || side === 1);
 
   return (
     <>
@@ -153,8 +217,22 @@ export default function Invitation() {
 
       <main>
         <div className={`stage${phase === "book" ? " show" : ""}`}>
-          <div className={`tilt${spread ? " open" : ""}`}>
-            <Book spread={spread} onOpen={open} onZoom={setZoom} onFlip={(s) => s !== spread && go(s)} />
+          <div
+            ref={focusRef}
+            className="focus"
+            style={zoomed && spread ? { transform: `scale(${zoomScale}) translateX(${side ? -25 : 25}%)` } : undefined}
+          >
+            <div className={`tilt${spread ? " open" : ""}${zoomed && spread ? " zoomed" : ""}`}>
+              <Book
+                spread={spread}
+                zoomed={zoomed && spread > 0}
+                onOpen={open}
+                onZoom={zoomTo}
+                onUnzoom={() => setZoomed(false)}
+                onSwipe={(dir) => (dir > 0 ? next() : prev())}
+                onFlip={(s) => s !== spread && go(s)}
+              />
+            </div>
           </div>
         </div>
       </main>
@@ -174,7 +252,9 @@ export default function Invitation() {
             ))}
           </div>
           <p className="hint">
-            {last ? "Büyütmek için sayfaya dokun" : "Büyütmek için sayfaya dokun · çevirmek için kaydır"}
+            {zoomed
+              ? "Kaydırarak sayfaları gez · küçültmek için dokun"
+              : "Büyütmek için sayfaya dokun · çevirmek için kaydır"}
           </p>
         </div>
         {last ? (
@@ -187,9 +267,22 @@ export default function Invitation() {
         )}
       </nav>
 
-      <div className={`zoom${zoom !== null ? " show" : ""}`} onClick={() => setZoom(null)} aria-hidden={zoom === null}>
-        {zoom !== null && <ZoomedPage index={zoom} />}
-        {zoom !== null && <button className="zoom-back">← Davetiye</button>}
+      {zoomed && spread > 0 && (
+        <button className="unzoom" onClick={() => setZoomed(false)} aria-label="Kitabın tamamını göster">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+            <circle cx="10.5" cy="10.5" r="6" /><path d="M15 15l5 5M8 10.5h5" />
+          </svg>
+        </button>
+      )}
+
+      <div className={`rotate-hint${rotateHint ? " show" : ""}`} onClick={() => setRotateHint(false)}>
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinejoin="round">
+          <rect x="15" y="6" width="18" height="32" rx="3.5" />
+          <path d="M22 33h4" strokeLinecap="round" />
+          <path d="M38 22a14 14 0 0 1-10 17" strokeLinecap="round" />
+          <path d="M25 36l3 3-3 3" strokeLinecap="round" />
+        </svg>
+        <span>Kitabı daha büyük görmek için telefonu yan çevirin</span>
       </div>
 
       <Rsvp />
