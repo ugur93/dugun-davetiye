@@ -18,6 +18,8 @@ export const WEDDING = {
   sfx: { flip: "resimler/sayfa-cevirme.m4a", cover: "resimler/kapak-acilma.m4a" },
   musicStart: 8.5, // şarkının ilk 8,5 saniyesi çok sessiz: kitap açılınca buradan başlar
   cover: "resimler/kapak.jpg", // kapağın ortasındaki resim
+  // Boyanmış süs şeritleri (yoksa kodla çizilenler kullanılır)
+  ornaments: { top: "resimler/serit-ust.png", bottom: "resimler/serit-alt.png" },
   paper: "resimler/sayfa.jpg", // yatay parşömen: sol yarısı sol sayfaya, sağ yarısı sağ sayfaya (yoksa kodla çizilen kâğıt)
   // Hareketli arka plan videoları (public/ içinde). Yoksa çizilmiş mum ışıklı masa görünür.
   backgroundVideo: { wide: "resimler/arka-plan.mp4", tall: "resimler/arka-plan-dikey.mp4" },

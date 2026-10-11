@@ -313,3 +313,38 @@ Eski videoları ben `resimler-orijinal/` klasörüne alırım; yenilerini de kü
 
 > Video beklemeden hemen sadeleştirmek isterseniz: `src/content.js` içinde `backgroundVideo` satırını
 > `backgroundVideo: null,` yapın; kodla çizilen sade ahşap masa ve mum ışığı geri gelir.
+
+---
+
+## Boyanmış süs şeritleri: `serit-ust.png` ve `serit-alt.png`
+
+Referans davetiyedeki gibi elle boyanmış üst ve alt şeritler. Görseller gelene kadar kodla çizilmiş versiyonları kullanılıyor.
+İki görsel de **çok geniş ve alçak** olmalı (ör. **2400×480**, yani 5:1). Araç bu oranı vermiyorsa en geniş yatay oranı seçin, fazlasını ben kırparım.
+
+**Üst şerit** (`public/resimler/serit-ust.png`)
+```
+A single horizontal decorative border for the top of a medieval illuminated
+manuscript page, in gouache and watercolor with fine dark ink outlines (lapis blue,
+vermilion red, leaf green and gold). Symmetrical, from left to right: a green and gold
+lozenge (diamond), a curling green vine with leaves and small gold four-petal
+flowers, a red eight-petal rosette, and in the exact centre a blue heraldic shield
+with a gold fleur-de-lis; then mirrored: red rosette, curling vine with gold flowers,
+green and gold lozenge. Plain flat cream parchment background (#F5EBD2), no frame,
+no text. Very wide and short banner, 5:1.
+```
+
+**Alt şerit** (`public/resimler/serit-alt.png`)
+```
+A single horizontal decorative band for the bottom of a medieval illuminated
+manuscript page, in gouache and watercolor with fine dark ink outlines. A rich green
+painted band filling the whole image edge to edge, with a thin gold line along the
+top and bottom edges. On it, evenly spaced: a heraldic shield split blue and red,
+a flying blue swallow with white wings holding a little sprig, two small white
+daisies, a red and blue chevron shield in the centre, two white daisies, another
+blue swallow facing the other way, and a shield split red and blue. No text, no
+frame outside the band. Very wide and short, 5:1.
+```
+
+İpuçları:
+- Görselde yazı ya da sayfa kenarı çıkarsa "remove all text and the page edges" yazın.
+- Üst şeridin arka planı düz krem olsun; site bu kremi kâğıtla birleştirir.

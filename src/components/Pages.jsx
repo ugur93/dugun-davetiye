@@ -92,17 +92,28 @@ const Daisy = () => (
   </svg>
 );
 
+// Painted border images (public/resimler/serit-ust.png, serit-alt.png) replace
+// the drawn ornaments when they exist.
+function PaintedBand({ src, className, children }) {
+  const [failed, setFailed] = useState(!src);
+  return (
+    <div className={`${className}${failed ? "" : " painted"}`}>
+      {failed ? children : <img src={import.meta.env.BASE_URL + src} alt="" draggable="false" onError={() => setFailed(true)} />}
+    </div>
+  );
+}
+
 const BandTop = () => (
-  <div className="band-top">
+  <PaintedBand src={WEDDING.ornaments?.top} className="band-top">
     <Lozenge /><Vine /><Rosette />
     <FleurShield />
     <Rosette /><Vine flip /><Lozenge />
-  </div>
+  </PaintedBand>
 );
 const BandBottom = () => (
-  <div className="band-bottom">
-    <PartyShield /><Swallow /><Daisy /><ChevronShield /><Daisy /><Swallow flip /><PartyShield a={RED} b={BLUE} />
-  </div>
+  <PaintedBand src={WEDDING.ornaments?.bottom} className="band-bottom">
+    <PartyShield /><Swallow /><Daisy /><Daisy /><ChevronShield /><Daisy /><Swallow flip /><PartyShield a={RED} b={BLUE} />
+  </PaintedBand>
 );
 
 export const Dropcap = ({ letter, color = BLUE }) => (
