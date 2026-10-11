@@ -283,33 +283,42 @@ WhatsApp bazen görselin kenarlarını kırpar.
 
 ---
 
-## Sade arka plan (eşyasız): `arka-plan.mp4` / `arka-plan-dikey.mp4`
+## Sade arka plan: `arka-plan.mp4` / `arka-plan-dikey.mp4`
 
-Mumlar, güller ve eşyalar fazla geldiyse: sadece sıcak ışıkta koyu ahşap bir masa, ilk haldeki gibi.
+Sıcak ışıkta koyu ahşap bir masa: köşede **tek bir mum** ve **alt kenarda birkaç çiçek**, başka hiçbir şey yok.
+Ortası boş kalmalı, çünkü kitap oraya oturuyor.
 Aynı iki adım: önce görsel (16:9 yatay ve 9:16 dikey), sonra o görselden video.
 
 **1. Görsel**
 ```
-Top-down photograph of a plain, dark walnut wooden table surface at night, filling the
-whole frame. Nothing on the table: no objects, no candles, no flowers, no paper.
-A soft warm pool of golden candlelight falls on the centre of the table from out of
-frame, gently fading into deep brown shadows towards the edges (natural vignette).
-Subtle wood grain and a few fine scratches, very slight film grain. A few tiny,
-very soft out-of-focus warm bokeh lights at the top edge only. Calm, cozy, intimate,
-minimal. No text, no people.
+Top-down photograph of a dark walnut wooden table at night, filling the whole frame.
+Almost empty and minimal: the large centre of the table is completely clear (a book
+will be placed there later).
+
+Only two things on the table:
+- one single lit ivory pillar candle in a small brass holder, near the top-left corner
+- a few loose flowers along the bottom edge: two or three dark red and blush roses with
+  a couple of green leaves and two or three scattered petals, partly cut off by the
+  bottom of the frame, softly out of focus
+
+The candle casts a warm pool of golden light that spreads across the centre and fades
+into deep brown shadows towards the edges (natural vignette). Subtle wood grain, slight
+film grain, cozy and intimate, calm. Nothing else: no other objects, no paper, no text,
+no people.
 ```
+Dikey (9:16) versiyon için aynı prompta şunu ekleyin: `Portrait 9:16. Keep the candle in the top-left corner and the flowers along the bottom edge; the middle stays empty.`
 
 **2. Video** (aynı görsel başlangıç karesi, 8 sn, kamera sabit, loop)
 ```
 Seamless looping cinemagraph of this image. Camera completely still, no zoom, no pan.
-Only motion: the warm light on the table flickers very gently as if from a candle
-just out of frame, the few bokeh lights at the top twinkle slowly, and a handful of
-tiny golden dust motes drift slowly through the light. Very subtle and calm. The
-last frame must match the first. No new objects, no text.
+Only motion: the candle flame flickers gently and the warm light on the table breathes
+softly with it, a thin wisp of smoke rises now and then, and a few tiny golden dust
+motes drift slowly through the light. Everything else stays still. The last frame must
+match the first. No new objects, no text.
 ```
 
 Kaydedin: **`public/resimler/arka-plan.mp4`** (yatay) ve **`public/resimler/arka-plan-dikey.mp4`** (dikey).
-Eski videoları ben `resimler-orijinal/` klasörüne alırım; yenilerini de küçültüp ilk karelerini çıkarırım.
+Eskilerini ben `resimler-orijinal/` klasörüne alırım; yenilerini de küçültüp ilk karelerini çıkarırım.
 
 > Video beklemeden hemen sadeleştirmek isterseniz: `src/content.js` içinde `backgroundVideo` satırını
 > `backgroundVideo: null,` yapın; kodla çizilen sade ahşap masa ve mum ışığı geri gelir.
