@@ -45,12 +45,6 @@ export const WEDDING = {
   guest: new URLSearchParams(window.location.search).get("misafir")?.trim().slice(0, 40) || "",
 };
 
-// Anı sayfasındaki fotoğraflar (public/resimler/ içinde)
-export const MEMORIES = [
-  { src: "resimler/ani-1.jpg", caption: "Çiçekli sokaklarda" },
-  { src: "resimler/ani-2.jpg", caption: "Rüzgârlı kıyılarda" },
-];
-
 // Masalın sayfaları. Her sayfada bir resim (public/resimler/…) ya da
 // resim yoksa kodla çizilmiş bir sahne (scene) ve metin var.
 export const STORY = [

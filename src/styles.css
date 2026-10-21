@@ -457,7 +457,6 @@ main {
 .real-paper .page::before { opacity: .35; }
 
 /* ---------- map + travel ---------- */
-.map-title { margin-top: 2.5cqw; }
 .map-scene { padding: 1cqw 3cqw 3cqw; align-items: center; }
 .map-scene img { object-position: center; border-radius: 1cqw; }
 .directions { font-weight: 600; font-style: italic; font-size: 4.2cqw; margin-top: 2cqw; color: #3a2a1a; }
@@ -600,3 +599,13 @@ main {
 .adm-qrbox { display: grid; justify-items: center; gap: 8px; }
 .adm-qr { width: 200px; height: 200px; }
 .adm-qrbox code { font-size: 13px; word-break: break-all; text-align: center; }
+
+/* map page: map on top, short directions and buttons below */
+.map-title { margin: 1cqw 0 0; font-size: 6.6cqw; }
+.map-scene { flex: 1 1 0; padding: 1cqw 3cqw 1.5cqw; }
+.map-info { flex: none; padding: 0 5cqw; text-align: center; }
+.map-place { font-family: "Cormorant Garamond", serif; font-size: 3.7cqw; line-height: 1.15; color: #1f3f8f; }
+.map-place b { font-family: "Almendra", serif; font-weight: 700; color: #a8261f; font-size: 1.15em; }
+.map-dir { font-family: "Cormorant Garamond", serif; font-style: italic; font-weight: 600; font-size: 3.4cqw; line-height: 1.15; margin: 1cqw 0 1.8cqw; color: #3a2a1a; }
+.map-info .travel-actions { padding: 0; margin: 0; gap: 1.6cqw; }
+.map-info .travel-actions .act { font-size: 3.5cqw; padding: 1.8cqw .4cqw; }

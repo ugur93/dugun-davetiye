@@ -2,7 +2,7 @@ import { useState } from "react";
 import qrcode from "qrcode-generator";
 import { INK } from "./Characters.jsx";
 import { SCENES } from "./Scenes.jsx";
-import { MEMORIES, STORY, WEDDING } from "../content.js";
+import { STORY, WEDDING } from "../content.js";
 import { Countdown, downloadIcs, googleCalendarUrl, openRsvp, rsvpAvailable } from "./Extras.jsx";
 import { greetingName, isSen, useGuest } from "../guest.js";
 
@@ -276,66 +276,28 @@ function InvitePage() {
 }
 
 function MapPage() {
-  return (
-    <>
-      <BandTop />
-      <h3 className="chapter map-title">Masal diyarının haritası</h3>
-      <div className="scene map-scene"><Illustration chapter={{ scene: "map", image: WEDDING.map }} /></div>
-      <BandBottom />
-    </>
-  );
-}
-
-function TravelPage() {
   const W = WEDDING;
   const apple = `https://maps.apple.com/?q=${encodeURIComponent("Seyirtepe Düğün")}&address=${encodeURIComponent(W.address)}`;
   return (
     <>
       <BandTop />
-      <div className="body">
-        <h3 className="chapter">Saklı Vadi'ye giden yol</h3>
-        <p className="story">
-          <Dropcap letter="S" />
-          eyirtepe, Bayraklı'da körfeze bakan bir tepenin üstünde. Yolu kaybetmeyin diye haritasını da çizdik.
-        </p>
-        <p className="story directions">{W.directions}</p>
-      </div>
-      <ul className="details travel">
-        <li>
-          <Tile frame={GREEN}>
-            <svg viewBox="0 0 24 24"><path d="M12 3a6.5 6.5 0 0 0-6.5 6.5c0 4.9 6.5 12 6.5 12s6.5-7.1 6.5-12A6.5 6.5 0 0 0 12 3z" fill={RED} stroke={INK} /><circle cx="12" cy="9.5" r="2.4" fill="#fbf3dc" /></svg>
-          </Tile>
-          <div>{W.venue}<small>{W.address}</small></div>
-        </li>
-      </ul>
-      <div className="actions travel-actions" onClick={stop}>
-        <a className="act" href={W.mapsUrl} target="_blank" rel="noopener noreferrer">Google Haritalar</a>
-        <a className="act" href={apple} target="_blank" rel="noopener noreferrer">Apple Haritalar</a>
-        <a className="act" href={W.venueUrl} target="_blank" rel="noopener noreferrer">Mekânın sitesi</a>
+      <h3 className="chapter map-title">Masal diyarının haritası</h3>
+      <div className="scene map-scene"><Illustration chapter={{ scene: "map", image: W.map }} /></div>
+      <div className="map-info">
+        <p className="map-place"><b>{W.venue}</b><br />{W.address}</p>
+        <p className="map-dir">{W.directions}</p>
+        <div className="actions travel-actions" onClick={stop}>
+          <a className="act" href={W.mapsUrl} target="_blank" rel="noopener noreferrer">Google Haritalar</a>
+          <a className="act" href={apple} target="_blank" rel="noopener noreferrer">Apple Haritalar</a>
+          <a className="act" href={W.venueUrl} target="_blank" rel="noopener noreferrer">Mekânın sitesi</a>
+        </div>
       </div>
       <BandBottom />
     </>
   );
 }
 
-function MemoriesPage() {
-  return (
-    <>
-      <BandTop />
-      <h3 className="chapter mem-title">Masalımızdan kareler</h3>
-      <div className="polaroids">
-        {MEMORIES.map((m, i) => (
-          <figure key={m.src} className={`polaroid p${i}`}>
-            <span className="tape" />
-            <img src={import.meta.env.BASE_URL + m.src} alt={m.caption} draggable="false" loading="lazy" />
-            <figcaption>{m.caption}</figcaption>
-          </figure>
-        ))}
-      </div>
-      <BandBottom />
-    </>
-  );
-}
+
 
 function CelebratePage() {
   const W = WEDDING;
@@ -360,7 +322,6 @@ function CelebratePage() {
           )}
           <button className="act" onClick={downloadIcs}>Takvime ekle</button>
           <a className="act" href={googleCalendarUrl()} target="_blank" rel="noopener noreferrer">Google Takvim</a>
-          <a className="act" href={W.mapsUrl} target="_blank" rel="noopener noreferrer">Yol tarifi al</a>
         </div>
         <div className="ever">…ve sonsuza kadar mutlu yaşadılar.</div>
       </div>
@@ -431,9 +392,9 @@ function WriteToUsPage() {
   );
 }
 
-// Book content in reading order: [left, right] for each spread. Guestbook
-// pages (if any messages are approved) sit between the countdown and the map,
-// and the map + directions spread is always the last one.
+// Book content in reading order: [left, right] for each spread. After the
+// invitation comes the map (left) with the countdown (right); guestbook pages
+// (if any messages are approved) follow at the end.
 const storyPages = STORY.map((chapter) => {
   const P = () => (chapter.finale ? <FinalePage chapter={chapter} /> : <StoryPage chapter={chapter} />);
   return P;
@@ -445,8 +406,11 @@ export function buildPages(messages = []) {
     return P;
   });
   if (book.length % 2) book.push(WriteToUsPage);
-  return [...storyPages, InvitePage, MemoriesPage, CelebratePage, ...book, MapPage, TravelPage];
+  return [...storyPages, InvitePage, MapPage, CelebratePage, ...book];
 }
+
+// Spread with the map (left page) and the countdown (right page).
+export const mapSpread = (pages) => pages.indexOf(MapPage) / 2 + 1;
 
 // Pages ask the book to roll to the map spread.
 export const goToMap = () => window.dispatchEvent(new Event("goto:map"));

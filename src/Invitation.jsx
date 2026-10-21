@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Book from "./components/Book.jsx";
-import { buildPages } from "./components/Pages.jsx";
+import { buildPages, mapSpread } from "./components/Pages.jsx";
 import { apiEnabled, apiGet } from "./api.js";
 import { greetingName, useGuest } from "./guest.js";
 import Background, { bgReady } from "./components/Background.jsx";
@@ -41,7 +41,7 @@ export default function Invitation() {
   }, []);
   const pages = useMemo(() => buildPages(messages || []), [messages]);
   const SPREADS = pages.length / 2;
-  const MAP_SPREAD = SPREADS; // map + directions are always the last spread
+  const MAP_SPREAD = mapSpread(pages); // map (left) + countdown (right)
   const spread = spreadFromPath(pathname, SPREADS);
 
   // names → book. Deep links go straight to the book.
