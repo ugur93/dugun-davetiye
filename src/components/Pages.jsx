@@ -229,8 +229,8 @@ function InvitePage() {
       <div className="invite-head">
         {name && <div className="greeting">Sevgili {name},</div>}
         <div className="line1"><Dropcap letter={first} color={GREEN} /><span className="red">{rest.join("")}</span></div>
-        <div className="blue">{isSen(g) ? "seni de yanımızda görmekten" : "sizleri de yanımızda görmekten"}</div>
-        <div className="red">mutluluk duyarız.</div>
+        <div className="blue">{isSen(g) ? "seni de yanımızda görmek" : "sizleri de yanımızda görmek"}</div>
+        <div className="red">masalımızın en tatlı dileği.</div>
         <div className="divider">
           <GoldFlower size={14} /><Lozenge /><GoldFlower size={14} /><Lozenge /><GoldFlower size={14} />
         </div>
@@ -308,8 +308,8 @@ function CelebratePage() {
     <>
       <BandTop />
       <div className="celebrate">
-        <h3 className="chapter">{name ? `Sevgili ${name},` : "Bizimle kutlar mısınız?"}</h3>
-        <p className="cel-sub">Birlikte yazacağımız nice güzel günün ilkine</p>
+        <h3 className="chapter">{name ? `Sevgili ${name},` : "Bu masalda siz de olur musunuz?"}</h3>
+        <p className="cel-sub">Birlikte yazacağımız nice mutlu günün ilkine</p>
         <Countdown />
         <p className="cel-sub">kaldı</p>
         <div className="actions" onClick={stop}>
@@ -323,7 +323,7 @@ function CelebratePage() {
           <button className="act" onClick={downloadIcs}>Takvime ekle</button>
           <a className="act" href={googleCalendarUrl()} target="_blank" rel="noopener noreferrer">Google Takvim</a>
         </div>
-        <div className="ever">…ve sonsuza kadar mutlu yaşadılar.</div>
+        <div className="ever">{isSen(g) ? "Gel, masalın devamını birlikte yazalım." : "Gelin, masalın devamını birlikte yazalım."}</div>
       </div>
       <BandBottom />
     </>
@@ -354,7 +354,7 @@ function GuestbookPage({ messages, first }) {
     <>
       <BandTop />
       <h3 className="chapter gb-title">Dilek Defteri</h3>
-      {first && <p className="gb-sub">Sevdiklerimizin masalımıza bıraktığı notlar</p>}
+      {first && <p className="gb-sub">Sevdiklerimizin masalımıza serptiği dilekler</p>}
       <div className="notes">
         {messages.map((m, i) => (
           <figure key={i} className={`note n${i % 3}`}>
@@ -375,14 +375,14 @@ function WriteToUsPage() {
     <>
       <BandTop />
       <div className="celebrate">
-        <h3 className="chapter">{sen ? "Sen de yaz!" : "Siz de yazın!"}</h3>
+        <h3 className="chapter">{sen ? "Bir dilek de sen bırak" : "Bir dilek de siz bırakın"}</h3>
         <p className="cel-sub">
-          {sen ? "Katılımını bildirirken bize bir not bırakabilirsin." : "Katılımınızı bildirirken bize bir not bırakabilirsiniz."}
-          {" "}En güzelleri bu deftere eklenecek.
+          {sen ? "Katılımını bildirirken bize bir dilek fısılda;" : "Katılımınızı bildirirken bize bir dilek fısıldayın;"}
+          {" "}en güzelleri bu sayfalara mürekkeple işlenecek.
         </p>
         {rsvpAvailable(g) && (
           <div className="actions" onClick={stop}>
-            <button className="act primary" onClick={openRsvp}>Not bırak</button>
+            <button className="act primary" onClick={openRsvp}>Dilek bırak</button>
           </div>
         )}
         <div className="ever">…ve sonsuza kadar mutlu yaşadılar.</div>

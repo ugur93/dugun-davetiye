@@ -14,7 +14,7 @@ const store = {
 
 const linkFor = (kod) => `${WEDDING.siteUrl}?d=${kod}`;
 const shareText = (g) =>
-  `Sevgili ${g.isim}, düğünümüze ${g.hitap === "sen" ? "davetlisin" : "davetlisiniz"} 💌\n` +
+  `Sevgili ${g.isim}, bir masal başlıyor ve ${g.hitap === "sen" ? "senin de içinde olmanı" : "sizin de içinde olmanızı"} çok istiyoruz 💌\n` +
   `${WEDDING.bride} & ${WEDDING.groom} · ${WEDDING.dateText}\n${linkFor(g.kod)}`;
 
 function Qr({ text }) {

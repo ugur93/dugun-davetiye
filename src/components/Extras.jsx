@@ -138,9 +138,11 @@ function SheetRsvp({ guest, close }) {
   if (status === "done") {
     return (
       <div className="rsvp" onClick={(e) => e.stopPropagation()}>
-        <h3>Teşekkürler!</h3>
+        <h3>Teşekkür ederiz!</h3>
         <p className="rsvp-sub">
-          {coming ? t("Seni aramızda görmek için sabırsızlanıyoruz.", "Sizi aramızda görmek için sabırsızlanıyoruz.") : t("Seni özleyeceğiz, aklımız sende olacak.", "Sizi özleyeceğiz, aklımız sizde olacak.")}
+          {coming
+            ? t("Masalın en sıcak köşesinde yerin hazır; seni görmek için sabırsızlanıyoruz.", "Masalın en sıcak köşesinde yeriniz hazır; sizi görmek için sabırsızlanıyoruz.")
+            : t("Yokluğun hissedilecek; o gece bir mumu da senin için yakacağız.", "Yokluğunuz hissedilecek; o gece bir mumu da sizin için yakacağız.")}
         </p>
         <p className="rsvp-note">{t("Yanıtını bu linkle istediğin zaman değiştirebilirsin.", "Yanıtınızı bu linkle istediğiniz zaman değiştirebilirsiniz.")}</p>
         <button className="send" type="button" onClick={close}>Davetiyeye dön</button>
@@ -206,8 +208,8 @@ function SheetRsvp({ guest, close }) {
       )}
 
       <label>
-        {t("Bize bir not bırak", "Bize bir not bırakın")} <i>(isteğe bağlı)</i>
-        <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} maxLength={500} placeholder="Dilekleriniz, anılarınız…" />
+        {t("Bize bir dilek bırak", "Bize bir dilek bırakın")} <i>(isteğe bağlı)</i>
+        <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} maxLength={500} placeholder="Dilekler, anılar, güzel sözler…" />
       </label>
       {note.trim() && (
         <label className="check small">

@@ -24,7 +24,7 @@ export const WEDDING = {
   // Arka plan: null = kodla çizilmiş mum ışıklı masa. Hareketli video için:
   // backgroundVideo: { wide: "resimler/arka-plan.mp4", tall: "resimler/arka-plan-dikey.mp4" },
   backgroundVideo: null,
-  event: "Düğün törenimizde", // davetiye sayfasındaki süslü başlık
+  event: "Düğün gecemizde", // davetiye sayfasındaki süslü başlık
   siteUrl: "https://ugur93.github.io/dugun-davetiye/", // QR kod bu adrese gider
   // Aile isimlerini yazarsanız davetiyede çiftin isimleri yerine bunlar çıkar, ör.
   // families: [{ parents: "Ayşe & Ali", surname: "YILMAZ" }, { parents: "Zehra & Mehmet", surname: "DEMİR" }],
@@ -53,28 +53,28 @@ export const STORY = [
     image: "resimler/1-bataklik.jpg", // yoksa kodla çizilen sahne görünür
     title: "Bir varmış, bir yokmuş…",
     text:
-      "Uzak, çok uzak diyarlarda, dağınık saçlı, kocaman gülüşlü bir delikanlı yaşarmış. Adı Uğur’muş. Şapkasını ters takar, kulübesinin önündeki gölün sessizliğini pek severmiş. Ama kalbinin bir köşesi hep bir masal beklermiş.",
+      "Uzak, çok uzak diyarlarda, dağınık saçlı, kocaman gülüşlü bir delikanlı yaşarmış: Uğur. Şapkasını ters takar, kulübesinin önündeki gölün sessizliğini dinlermiş. Ama kalbinin en gizli köşesinde, henüz adını bilmediği bir masal beklermiş.",
   },
   {
     scene: "garden",
     image: "resimler/2-bahce.jpg", // yoksa kodla çizilen sahne görünür
     title: "Çiçekli bahçenin prensesi",
     text:
-      "Aynı diyarın bir başka köşesinde, kıvırcık saçları rüzgârda dans eden, gülüşü güneşi kıskandıran bir prenses varmış: Fatma. Begonvilli duvarların arasında dolaşır, masalların bir gün gerçek olacağına inanırmış.",
+      "Aynı diyarın bir başka köşesinde, kıvırcık saçlarıyla rüzgârı dans ettiren, gülüşüyle güneşi kıskandıran bir prenses varmış: Fatma. Begonvillerin arasında dolaşır, yıldızlara fısıldadığı dileklerin bir gün gerçek olacağına inanırmış.",
   },
   {
     scene: "meet",
     image: "resimler/3-tanisma.jpg", // yoksa kodla çizilen sahne görünür
-    title: "Kader yolları kesiştirince",
+    title: "Kaderin ördüğü patika",
     text:
-      "Bir gün kader, ikisinin yolunu aynı patikada buluşturmuş. Delikanlı, prensesi görünce bütün yolları unutmuş; prenses ise bu kocaman gülüşün ardındaki kalbin, gülüşünden bile büyük olduğunu anlamış.",
+      "Derken bir gün kader, iki yolu aynı patikada usulca birleştirmiş. Delikanlı prensesi görünce bütün yolları unutmuş; prenses ise o kocaman gülüşün ardında, gülüşünden de büyük bir kalp olduğunu sezmiş. İki ayrı masal, o gün tek bir kitapta buluşmuş.",
   },
   {
     scene: "sea",
     image: "resimler/4-deniz.jpg", // yoksa kodla çizilen sahne görünür
-    title: "Denizler ve maceralar",
+    title: "Rüzgâr, deniz ve bir soru",
     text:
-      "Birlikte denizler görmüşler, rüzgârlı kıyılarda saçlarını dağıtmışlar, gün batımlarını tek tek saymışlar. Her macera, masallarına yeni bir sayfa eklemiş. Sonunda bir gün delikanlı dizinin üstüne çökmüş ve o soruyu sormuş; prenses gülümseyerek “Evet!” demiş.",
+      "Birlikte denizler aşmışlar, rüzgârlı kıyılarda saçlarını dalgalara emanet etmişler, gün batımlarını tek tek biriktirmişler. Her macera masallarına yeni bir sayfa eklemiş. Ve bir akşam delikanlı dizinin üstüne çökmüş, o soruyu sormuş; prensesin gözleri parlamış: “Evet!”",
   },
   {
     scene: "royal",
